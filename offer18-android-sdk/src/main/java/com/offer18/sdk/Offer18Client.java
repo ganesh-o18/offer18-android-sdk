@@ -3,11 +3,8 @@ package com.offer18.sdk;
 import android.util.Log;
 
 import com.offer18.sdk.constant.Constant;
-import com.offer18.sdk.constant.Constant.*;
-
 import com.offer18.sdk.contract.Client;
 import com.offer18.sdk.contract.Configuration;
-
 
 import java.io.IOException;
 import java.util.Map;

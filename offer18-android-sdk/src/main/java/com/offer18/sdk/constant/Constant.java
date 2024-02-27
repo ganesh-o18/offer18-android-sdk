@@ -13,7 +13,7 @@ public class Constant {
     public static final String ADV_SUB_5 = "adv_sub5";
     public static final String OFFER_ID = "o";
     public static final String COUPON = "coupon";
-    public static final String EVENT = "coupon";
+    public static final String EVENT = "event";
     public static final String SALE = "sale";
     public static final String PAYOUT = "payout";
     public static final String TID = "tid";
