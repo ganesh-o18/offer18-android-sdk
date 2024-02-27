@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Offer18-TestApp</string>
+
+    <string-array name="postback_type">
+        <item>iframe</item>
+        <item>pixel</item>
+    </string-array>
+
+    <string-array name="is_global_pixel">
+        <item>false</item>
+        <item>true</item>
+    </string-array>
+</resources>

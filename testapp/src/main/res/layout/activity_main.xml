@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp">
+
+            <EditText
+                android:id="@+id/domain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Domain"
+                android:text="ganesh-local-dev.o18-test.live" />
+
+            <EditText
+                android:id="@+id/account_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="AccountID"
+                android:text="18962" />
+
+            <EditText
+                android:id="@+id/tid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="TID"
+                android:text="D-20522086-1708579833--RSNID6302" />
+
+            <EditText
+                android:id="@+id/offer_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="OfferID"
+                android:text="20522086" />
+
+            <EditText
+                android:id="@+id/adv_sub1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Adv Sub 1"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/adv_sub2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Adv Sub 2"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/adv_sub3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Adv Sub 3"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/adv_sub4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Adv Sub 4"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/adv_sub5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Adv Sub 5"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/event"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Event"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/sale"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Sale"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/payout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Payout"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/coupon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Coupon"
+                android:text="" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Global Pixel" />
+            <Spinner
+                android:id="@+id/is_global_pixel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Postback Type" />
+
+            <Spinner
+                android:id="@+id/postback_type"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="10dp"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/allow_multi_conversion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Allow Multi Conversion - true / false"
+                android:text="" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:paddingVertical="20dp"
+                android:text="Add Conversion" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
