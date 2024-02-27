@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.offer18.sdk.Offer18;
+import com.offer18.sdk.constant.Constant;
 
 import java.util.HashMap;
 
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     HashMap<String, String> args = new HashMap<String, String>();
     View trackConversionBtn;
     EditText offerId, accountId, tid, domain, advSub1, advSub2, advSub3, advSub4, advSub5, event, payout, sale, coupon,
-              allowMultiConversion;
+              allowMultiConversion, currency;
     Spinner postbackType, isGlobalPixel;
 
     @Override
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         sale = (EditText) findViewById(R.id.sale);
         payout = (EditText) findViewById(R.id.payout);
         coupon = (EditText) findViewById(R.id.coupon);
+        currency = (EditText) findViewById(R.id.currency);
         postbackType = (Spinner) findViewById(R.id.postback_type);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
@@ -63,21 +65,21 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Offer18.init(p);
                     args.put("domain", domain.getText().toString());
-                    args.put("offerId", offerId.getText().toString());
-                    args.put("accountId", accountId.getText().toString());
-                    args.put("tid", tid.getText().toString());
-                    args.put("advSub1", advSub1.getText().toString());
-                    args.put("advSub2", advSub2.getText().toString());
-                    args.put("advSub3", advSub3.getText().toString());
-                    args.put("advSub4", advSub4.getText().toString());
-                    args.put("advSub5", advSub5.getText().toString());
-                    args.put("event", event.getText().toString());
-                    args.put("sale", sale.getText().toString());
-                    args.put("payout", payout.getText().toString());
-                    args.put("coupon", coupon.getText().toString());
-                    args.put("postbackType", postbackType.getSelectedItem().toString());
-                    args.put("isGlobalPixel", isGlobalPixel.getSelectedItem().toString());
-                    args.put("allowMultiConversion", allowMultiConversion.getText().toString());
+                    args.put(Constant.OFFER_ID, offerId.getText().toString());
+                    args.put(Constant.ACCOUNT_ID, accountId.getText().toString());
+                    args.put(Constant.TID, tid.getText().toString());
+                    args.put(Constant.ADV_SUB_1, advSub1.getText().toString());
+                    args.put(Constant.ADV_SUB_2, advSub2.getText().toString());
+                    args.put(Constant.ADV_SUB_3, advSub3.getText().toString());
+                    args.put(Constant.ADV_SUB_4, advSub4.getText().toString());
+                    args.put(Constant.ADV_SUB_5, advSub5.getText().toString());
+                    args.put(Constant.EVENT, event.getText().toString());
+                    args.put(Constant.SALE, sale.getText().toString());
+                    args.put(Constant.PAYOUT, payout.getText().toString());
+                    args.put(Constant.COUPON, coupon.getText().toString());
+                    args.put(Constant.CURRENCY, currency.getText().toString());
+                    args.put(Constant.POSTBACK_TYPE, postbackType.getSelectedItem().toString().equals("iframe") ? Constant.POSTBACK_TYPE_IFRAME : Constant.POSTBACK_TYPE_PIXEL);
+                    args.put(Constant.IS_GLOBAL_PIXEL, isGlobalPixel.getSelectedItem().toString());
                     Offer18.trackConversion(args);
                     Toast.makeText(MainActivity.this, "Conversion Recorded  ", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
