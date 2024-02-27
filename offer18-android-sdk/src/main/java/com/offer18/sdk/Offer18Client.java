@@ -61,7 +61,7 @@ public class Offer18Client implements Client {
             if (Objects.requireNonNull(args.get(Constant.IS_GLOBAL_PIXEL)).equals("true")) {
                 args.put(Constant.IS_GLOBAL_PIXEL, "1");
                 args.remove(Constant.OFFER_ID);
-            } else if (Objects.requireNonNull(args.get(Constant.IS_GLOBAL_PIXEL)).equals("false")) {
+            } else {
                 args.remove(Constant.IS_GLOBAL_PIXEL);
             }
         }
