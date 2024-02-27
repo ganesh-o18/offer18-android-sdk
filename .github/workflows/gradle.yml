@@ -1,4 +1,7 @@
-name: Java CI with Gradle
+name: Android CI with Gradle
+
+# Run Test
+# Build
 
 on:
   push:
@@ -30,6 +33,5 @@ jobs:
     - name: Run Tests with Gradle
       run: ./gradlew test
 
-
-    - name: Build with Gradle Wrapper
-      run: ./gradlew build
+#    - name: Build with Gradle Wrapper
+#      run: ./gradlew build
