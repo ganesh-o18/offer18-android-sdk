@@ -28,15 +28,12 @@ public class Offer18ClientUnitTest {
         String offerId = "20520286";
         String advSub1 = "1";
         String coupon = "coupon_1";
-        String postbackType = "i";
-        String isGlobalPixel = "1";
         args.put(Constant.DOMAIN, domain);
         args.put(Constant.ACCOUNT_ID, accountId);
         args.put(Constant.OFFER_ID, offerId);
         args.put(Constant.ADV_SUB_1, advSub1);
         args.put(Constant.COUPON, coupon);
-//        args.put(Constant.POSTBACK_TYPE, postbackType);
-        args.put(Constant.IS_GLOBAL_PIXEL, isGlobalPixel);
+        args.put(Constant.POSTBACK_TYPE, Constant.POSTBACK_TYPE_IFRAME);
         HttpUrl url = new Offer18Client().buildEndpoint(args);
         assertNotNull(url.toString());
         System.out.println(url.url());
@@ -45,7 +42,7 @@ public class Offer18ClientUnitTest {
         assertEquals(url.queryParameter(Constant.OFFER_ID), offerId);
         assertEquals(url.queryParameter(Constant.ADV_SUB_1), advSub1);
         assertEquals(url.queryParameter(Constant.COUPON), coupon);
-        assertEquals(url.queryParameter(Constant.POSTBACK_TYPE), Constant.POSTBACK_TYPE_PIXEL);
+        assertEquals(url.queryParameter(Constant.POSTBACK_TYPE), Constant.POSTBACK_TYPE_IFRAME);
     }
 }
 
