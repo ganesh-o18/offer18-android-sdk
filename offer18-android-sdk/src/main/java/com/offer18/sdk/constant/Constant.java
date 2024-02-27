@@ -12,4 +12,10 @@ public class Constant {
     public static final String ADV_SUB_4 = "advSub4";
     public static final String ADV_SUB_5 = "advSub5";
     public static final String OFFER_ID = "offerId";
+    public static final String COUPON = "coupon";
+    public static final String EVENT = "coupon";
+    public static final String SALE = "sale";
+    public static final String PAYOUT = "payout";
+    public static final String TID = "tid";
+    public static final String POSTBACK_TYPE = "postbackType";
 }

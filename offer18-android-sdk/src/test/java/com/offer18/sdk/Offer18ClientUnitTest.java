@@ -27,10 +27,14 @@ public class Offer18ClientUnitTest {
         String accountId = "18962";
         String offerId = "20520286";
         String advSub1 = "1";
+        String coupon = "coupon_1";
+        String postbackType = "pixel";
         args.put(Constant.DOMAIN, domain);
         args.put(Constant.ACCOUNT_ID, accountId);
         args.put(Constant.OFFER_ID, offerId);
         args.put(Constant.ADV_SUB_1, advSub1);
+        args.put(Constant.COUPON, coupon);
+        args.put(Constant.POSTBACK_TYPE, postbackType);
         HttpUrl url = new Offer18Client().buildEndpoint(args);
         assertNotNull(url.toString());
         System.out.println(url.url());
@@ -38,6 +42,8 @@ public class Offer18ClientUnitTest {
         assertEquals(url.queryParameter("m"), accountId);
         assertEquals(url.queryParameter("o"), offerId);
         assertEquals(url.queryParameter("adv_sub1"), advSub1);
+        assertEquals(url.queryParameter("coupon"), coupon);
+        assertEquals(url.queryParameter("t"), "i");
     }
 }
 
