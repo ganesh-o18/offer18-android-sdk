@@ -8,11 +8,15 @@ import com.offer18.sdk.contract.Configuration;
 import com.offer18.sdk.contract.Storage;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -70,10 +74,23 @@ public class Offer18Client implements Client {
                         http = serviceDocument.getJSONObject("http");
                         serviceDiscovery = serviceDocument.getJSONObject("service_discovery");
                         storage.set("service_document_updated_at", Long.toString(currentUnixTimeStamp));
-                        storage.set("time_out", http.getString("time_out"));
-                        storage.set("ssl_verification", http.getString("ssl_verification"));
-                        storage.set("expires_in", serviceDiscovery.getString("expires_in"));
+                        storage.set("http_time_out", http.getString("time_out"));
+                        storage.set("http_ssl_verification", http.getString("ssl_verification"));
+                        storage.set("service_document_expires_in", serviceDiscovery.getString("expires_in"));
                         services = serviceDocument.getJSONObject("services");
+                        conversion = services.getJSONObject("conversion");
+                        JSONArray fields = conversion.getJSONArray("fields");
+                        JSONObject fieldValidations = conversion.getJSONObject("fields_validation");
+                        for(int i = 0; i < fields.length(); i++) {
+                            String field = fields.getString(i);
+                            JSONObject fieldValidation = fieldValidations.getJSONObject(field);
+                            String formName = fieldValidation.getString("form_name");
+                            boolean required = fieldValidation.getBoolean("required");
+                            String dataType = fieldValidation.getString("type");
+                            storage.set("conversion." + field + "." + "form_name", formName);
+                            storage.set("conversion." + field + "." + "required", Boolean.toString(required));
+                            storage.set("conversion." + field + "." + "type", dataType);
+                        }
                     } catch (JSONException e) {
                         Log.d("offer18-sd-response", "json parse error, response is not valid json");
                     }
