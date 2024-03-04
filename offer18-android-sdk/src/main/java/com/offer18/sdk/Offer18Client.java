@@ -62,6 +62,11 @@ public class Offer18Client implements Client {
                     JSONObject serviceDocument, services, http, serviceDiscovery, conversion = null;
                     try {
                         serviceDocument = new JSONObject(json);
+                        String digest = serviceDocument.getString("digest");
+                        if (Objects.equals(storage.get("digest"), digest)) {
+                            return;
+                        }
+                        storage.set("digest", digest);
                         http = serviceDocument.getJSONObject("http");
                         serviceDiscovery = serviceDocument.getJSONObject("service_discovery");
                         storage.set("service_document_updated_at", Long.toString(currentUnixTimeStamp));
