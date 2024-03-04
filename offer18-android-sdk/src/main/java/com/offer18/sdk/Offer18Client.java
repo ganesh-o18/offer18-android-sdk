@@ -5,8 +5,14 @@ import android.util.Log;
 import com.offer18.sdk.constant.Constant;
 import com.offer18.sdk.contract.Client;
 import com.offer18.sdk.contract.Configuration;
+import com.offer18.sdk.contract.Storage;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Objects;
 
@@ -25,8 +31,50 @@ public class Offer18Client implements Client {
     };
     private final OkHttpClient httpClient;
 
-    public Offer18Client() {
-        this.httpClient = new OkHttpClient();
+    public Offer18Client(Configuration configuration) {
+        long currentUnixTimeStamp = Calendar.getInstance().getTimeInMillis() / 1000;
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+//        clientBuilder.addInterceptor(new ServiceDiscoveryInterceptor());
+        this.httpClient = clientBuilder.build();
+        if (configuration.getServiceDiscovery().serviceDiscoveryTimeout() - currentUnixTimeStamp <= 0) {
+            // Service discovery document is stale, update it.
+            String url = "https://ganesh-local-dev.o18-test.live/m/files/cron-jobs/service_discovery.php";
+            Request request = new Request.Builder().url(url).build();
+            this.httpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (!response.isSuccessful()) {
+                        Log.d("offer18-sd-http", Integer.toString(response.code()));
+                    }
+                    Storage storage = configuration.getStorage();
+                    if (Objects.isNull(storage)) {
+                        Log.d("offer18-sd-storage", "storage not available");
+                    }
+                    String json = response.body() != null ? response.body().string() : null;
+                    if (Objects.isNull(json) || Objects.requireNonNull(json).length() == 0) {
+                        Log.d("offer18-sd-response", "response is not valid json");
+                    }
+                    JSONObject serviceDocument, services, http, serviceDiscovery, conversion = null;
+                    try {
+                        serviceDocument = new JSONObject(json);
+                        http = serviceDocument.getJSONObject("http");
+                        serviceDiscovery = serviceDocument.getJSONObject("service_discovery");
+                        storage.set("service_document_updated_at", Long.toString(currentUnixTimeStamp));
+                        storage.set("time_out", http.getString("time_out"));
+                        storage.set("ssl_verification", http.getString("ssl_verification"));
+                        storage.set("expires_in", serviceDiscovery.getString("expires_in"));
+                        services = serviceDocument.getJSONObject("services");
+                    } catch (JSONException e) {
+                        Log.d("offer18-sd-response", "json parse error, response is not valid json");
+                    }
+                }
+            });
+        }
     }
 
     @Override

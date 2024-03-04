@@ -1,11 +1,14 @@
 package com.offer18.sdk;
 
+import android.content.Context;
+
 import com.offer18.sdk.Exception.Offer18ClientNotInitialiseException;
 import com.offer18.sdk.Exception.Offer18InvalidCredentialException;
 import com.offer18.sdk.constant.Constant;
 import com.offer18.sdk.contract.Client;
 import com.offer18.sdk.contract.Configuration;
 import com.offer18.sdk.contract.CredentialManager;
+import com.offer18.sdk.contract.Storage;
 
 import java.util.Map;
 import java.util.Objects;
@@ -23,10 +26,11 @@ public class Offer18 {
     /**
      * Init SDK
      */
-    public static void init(Map<String, String> credentials) throws Exception {
-//        credentialManager = validateCredentials(credentials);
-//        configuration = new Offer18Configuration(credentialManager);
-        client = initSDK();
+    public static void init(Context context, Map<String, String> credentials) throws Exception {
+        Configuration configuration = new Offer18Configuration(new Offer18CredentialManager());
+        Storage storage = new Offer18Storage(context);
+        configuration.setStorage(storage);
+        client = new Offer18Client(configuration);
     }
 
     /**
@@ -80,12 +84,5 @@ public class Offer18 {
             throw new Offer18InvalidCredentialException("There is no api secret in provided credentials");
         }
         return new Offer18CredentialManager(apiKey, apiSecret);
-    }
-
-    /**
-     * Initialise SDK
-     */
-    private static Client initSDK() throws Exception {
-        return new Offer18Client();
     }
 }

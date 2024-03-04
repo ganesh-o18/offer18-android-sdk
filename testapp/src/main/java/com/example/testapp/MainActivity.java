@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    Offer18.init(p);
+                    Offer18.init(getBaseContext(), p);
                     args.put("domain", domain.getText().toString());
                     args.put(Constant.OFFER_ID, offerId.getText().toString());
                     args.put(Constant.ACCOUNT_ID, accountId.getText().toString());
