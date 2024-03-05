@@ -34,7 +34,7 @@ public class Offer18Configuration implements Configuration {
 
     @Override
     public ServiceDiscovery getServiceDiscovery() {
-        return new Offer18ServiceDiscovery();
+        return new Offer18ServiceDiscovery(this.storage);
     }
 
     @Override

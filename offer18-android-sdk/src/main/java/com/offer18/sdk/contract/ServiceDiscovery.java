@@ -23,5 +23,17 @@ public interface ServiceDiscovery {
 
     Long serviceDiscoveryTimeout();
 
+    /**
+     * Check if service document is outdated
+     * @return
+     */
+    boolean isOutDated();
+
+    /**
+     * Check if service document exists
+     * @return
+     */
+    boolean isExists();
+
     Map<String, HashMap<String, String>> getServices();
 }

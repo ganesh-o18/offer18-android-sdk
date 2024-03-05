@@ -8,6 +8,7 @@ import com.offer18.sdk.contract.Configuration;
 import com.offer18.sdk.contract.Storage;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,6 +25,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class Offer18Client implements Client {
+    protected Configuration configuration;
     private final String[] params = {Constant.OFFER_ID, Constant.ACCOUNT_ID, Constant.POSTBACK_TYPE,
             Constant.IS_GLOBAL_PIXEL, Constant.EVENT, Constant.COUPON, Constant.TID,
             Constant.ADV_SUB_1, Constant.ADV_SUB_2, Constant.ADV_SUB_3, Constant.ADV_SUB_4,
@@ -32,11 +34,13 @@ public class Offer18Client implements Client {
     private final OkHttpClient httpClient;
 
     public Offer18Client(Configuration configuration) {
+        this.configuration = configuration;
         long currentUnixTimeStamp = Calendar.getInstance().getTimeInMillis() / 1000;
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
 //        clientBuilder.addInterceptor(new ServiceDiscoveryInterceptor());
         this.httpClient = clientBuilder.build();
-        if (configuration.getServiceDiscovery().serviceDiscoveryTimeout() - currentUnixTimeStamp <= 0) {
+        this.httpClient.dispatcher().setMaxRequests(1);
+        if (configuration.getServiceDiscovery().isOutDated()) {
             // Service discovery document is stale, update it.
             String url = "https://ganesh-local-dev.o18-test.live/m/files/cron-jobs/service_discovery.php";
             Request request = new Request.Builder().url(url).build();
@@ -48,6 +52,7 @@ public class Offer18Client implements Client {
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    Log.d("sd-1", response.toString());
                     if (!response.isSuccessful()) {
                         Log.d("offer18-sd-http", Integer.toString(response.code()));
                     }
@@ -56,19 +61,37 @@ public class Offer18Client implements Client {
                         Log.d("offer18-sd-storage", "storage not available");
                     }
                     String json = response.body() != null ? response.body().string() : null;
-                    if (Objects.isNull(json) || Objects.requireNonNull(json).length() == 0) {
+                    if (Objects.isNull(json) || Objects.requireNonNull(json).isEmpty()) {
                         Log.d("offer18-sd-response", "response is not valid json");
                     }
                     JSONObject serviceDocument, services, http, serviceDiscovery, conversion = null;
                     try {
                         serviceDocument = new JSONObject(json);
+                        String digest = serviceDocument.getString("digest");
+                        if (Objects.equals(storage.get("digest"), digest)) {
+                            return;
+                        }
+                        storage.set("digest", digest);
                         http = serviceDocument.getJSONObject("http");
                         serviceDiscovery = serviceDocument.getJSONObject("service_discovery");
                         storage.set("service_document_updated_at", Long.toString(currentUnixTimeStamp));
-                        storage.set("time_out", http.getString("time_out"));
-                        storage.set("ssl_verification", http.getString("ssl_verification"));
-                        storage.set("expires_in", serviceDiscovery.getString("expires_in"));
+                        storage.set("http_time_out", http.getString("time_out"));
+                        storage.set("http_ssl_verification", http.getString("ssl_verification"));
+                        storage.set("service_document_expires_in", serviceDiscovery.getString("expires_in"));
                         services = serviceDocument.getJSONObject("services");
+                        conversion = services.getJSONObject("conversion");
+                        JSONArray fields = conversion.getJSONArray("fields");
+                        JSONObject fieldValidations = conversion.getJSONObject("fields_validation");
+                        for(int i = 0; i < fields.length(); i++) {
+                            String field = fields.getString(i);
+                            JSONObject fieldValidation = fieldValidations.getJSONObject(field);
+                            String formName = fieldValidation.getString("form_name");
+                            boolean required = fieldValidation.getBoolean("required");
+                            String dataType = fieldValidation.getString("type");
+                            storage.set("conversion." + field + "." + "form_name", formName);
+                            storage.set("conversion." + field + "." + "required", Boolean.toString(required));
+                            storage.set("conversion." + field + "." + "type", dataType);
+                        }
                     } catch (JSONException e) {
                         Log.d("offer18-sd-response", "json parse error, response is not valid json");
                     }
@@ -114,11 +137,10 @@ public class Offer18Client implements Client {
             }
         }
         for (String param : this.params) {
-            if (args.containsKey(param) && Objects.requireNonNull(args.get(param)).length() > 0) {
+            if (args.containsKey(param) && !Objects.requireNonNull(args.get(param)).isEmpty()) {
                 url.addQueryParameter(param, args.get(param));
             }
         }
-
         return url.build();
     }
 }
