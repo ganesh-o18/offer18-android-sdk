@@ -22,4 +22,5 @@ public class Constant {
     public static final String POSTBACK_TYPE_IFRAME = "f";
     public static final String IS_GLOBAL_PIXEL = "gb";
     public static final String CURRENCY = "currency";
+    public static final String ALLOW_MULTI_CONVERSION = "multi_conv";
 }

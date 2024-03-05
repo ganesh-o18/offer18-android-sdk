@@ -141,6 +141,16 @@ public class Offer18Client implements Client {
                 url.addQueryParameter(param, args.get(param));
             }
         }
+        if (args.containsKey(Constant.ALLOW_MULTI_CONVERSION) &&
+                Objects.requireNonNull(args.get(Constant.ALLOW_MULTI_CONVERSION)).equals("true") &&
+                args.containsKey(Constant.TID) &&
+                !Objects.requireNonNull(args.get(Constant.TID)).isEmpty()
+        ) {
+            this.configuration.getStorage().set("allow_multi_conversion" , "true");
+            this.configuration.getStorage().set("tid" , args.get(Constant.TID));
+            long tidValidTill = (Calendar.getInstance().getTimeInMillis() / 1000) + 24 * 60 * 60;
+            this.configuration.getStorage().set("tid_valid_till", Long.toString(tidValidTill));
+        }
         return url.build();
     }
 }
