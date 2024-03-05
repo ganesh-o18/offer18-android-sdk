@@ -37,9 +37,6 @@ public class Offer18 {
      * Track conversion
      */
     public static void trackConversion(Map<String, String> args) throws Offer18ClientNotInitialiseException {
-//        if (client == null) {
-//            throw new Offer18ClientNotInitialiseException("Offer18 sdk not initialised");
-//        }
         client.trackConversion(args, configuration);
     }
 
@@ -72,15 +69,15 @@ public class Offer18 {
         if (credentials == null || credentials.isEmpty()) {
             throw new Offer18InvalidCredentialException("There is no api key and secret key in provided credentials");
         }
-        String apiKey = (String) credentials.get("api-key");
-        String apiSecret = (String) credentials.get("api-secret");
-        if ((apiKey == null || apiKey.length() == 0) && (apiSecret == null || apiSecret.length() == 0)) {
+        String apiKey = credentials.get("api-key");
+        String apiSecret = credentials.get("api-secret");
+        if ((apiKey == null || apiKey.isEmpty()) && (apiSecret == null || apiSecret.isEmpty())) {
             throw new Offer18InvalidCredentialException("There is no api key and secret key in provided credentials");
         }
-        if (apiKey == null || apiKey.length() == 0) {
+        if (apiKey == null || apiKey.isEmpty()) {
             throw new Offer18InvalidCredentialException("There is no api key in provided credentials");
         }
-        if (apiSecret == null || apiSecret.length() == 0) {
+        if (apiSecret == null || apiSecret.isEmpty()) {
             throw new Offer18InvalidCredentialException("There is no api secret in provided credentials");
         }
         return new Offer18CredentialManager(apiKey, apiSecret);

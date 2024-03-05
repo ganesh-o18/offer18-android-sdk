@@ -1,13 +1,17 @@
 package com.offer18.sdk;
 
 import com.offer18.sdk.contract.ServiceDiscovery;
+import com.offer18.sdk.contract.Storage;
 
 import java.util.HashMap;
 import java.util.Map;
 
  class Offer18ServiceDiscovery implements ServiceDiscovery {
+    protected Storage storage;
 
-    private static final String url = "https://ganesh-local-dev.o18-test.live/m/files/cron-jobs/service_discovery.php";
+     public Offer18ServiceDiscovery(Storage storage) {
+        this.storage = storage;
+     }
 
     @Override
     public Long getHttpTimeout() {
@@ -24,7 +28,17 @@ import java.util.Map;
         return 1000L;
     }
 
-    @Override
+     @Override
+     public boolean isOutDated() {
+         return false;
+     }
+
+     @Override
+     public boolean isExists() {
+         return false;
+     }
+
+     @Override
     public Map<String, HashMap<String, String>> getServices() {
         return null;
     }

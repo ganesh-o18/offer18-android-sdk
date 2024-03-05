@@ -12,11 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -28,6 +25,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class Offer18Client implements Client {
+    protected Configuration configuration;
     private final String[] params = {Constant.OFFER_ID, Constant.ACCOUNT_ID, Constant.POSTBACK_TYPE,
             Constant.IS_GLOBAL_PIXEL, Constant.EVENT, Constant.COUPON, Constant.TID,
             Constant.ADV_SUB_1, Constant.ADV_SUB_2, Constant.ADV_SUB_3, Constant.ADV_SUB_4,
@@ -36,11 +34,13 @@ public class Offer18Client implements Client {
     private final OkHttpClient httpClient;
 
     public Offer18Client(Configuration configuration) {
+        this.configuration = configuration;
         long currentUnixTimeStamp = Calendar.getInstance().getTimeInMillis() / 1000;
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
 //        clientBuilder.addInterceptor(new ServiceDiscoveryInterceptor());
         this.httpClient = clientBuilder.build();
-        if (configuration.getServiceDiscovery().serviceDiscoveryTimeout() - currentUnixTimeStamp <= 0) {
+        this.httpClient.dispatcher().setMaxRequests(1);
+        if (configuration.getServiceDiscovery().isOutDated()) {
             // Service discovery document is stale, update it.
             String url = "https://ganesh-local-dev.o18-test.live/m/files/cron-jobs/service_discovery.php";
             Request request = new Request.Builder().url(url).build();
@@ -52,6 +52,7 @@ public class Offer18Client implements Client {
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    Log.d("sd-1", response.toString());
                     if (!response.isSuccessful()) {
                         Log.d("offer18-sd-http", Integer.toString(response.code()));
                     }
@@ -60,7 +61,7 @@ public class Offer18Client implements Client {
                         Log.d("offer18-sd-storage", "storage not available");
                     }
                     String json = response.body() != null ? response.body().string() : null;
-                    if (Objects.isNull(json) || Objects.requireNonNull(json).length() == 0) {
+                    if (Objects.isNull(json) || Objects.requireNonNull(json).isEmpty()) {
                         Log.d("offer18-sd-response", "response is not valid json");
                     }
                     JSONObject serviceDocument, services, http, serviceDiscovery, conversion = null;
@@ -136,11 +137,10 @@ public class Offer18Client implements Client {
             }
         }
         for (String param : this.params) {
-            if (args.containsKey(param) && Objects.requireNonNull(args.get(param)).length() > 0) {
+            if (args.containsKey(param) && !Objects.requireNonNull(args.get(param)).isEmpty()) {
                 url.addQueryParameter(param, args.get(param));
             }
         }
-
         return url.build();
     }
 }
