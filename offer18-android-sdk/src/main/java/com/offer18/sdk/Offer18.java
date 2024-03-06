@@ -3,6 +3,7 @@ package com.offer18.sdk;
 import android.content.Context;
 
 import com.offer18.sdk.Exception.Offer18ClientNotInitialiseException;
+import com.offer18.sdk.Exception.Offer18FormFieldDataTypeException;
 import com.offer18.sdk.Exception.Offer18FormFieldRequiredException;
 import com.offer18.sdk.Exception.Offer18InvalidCredentialException;
 import com.offer18.sdk.Exception.Offer18SSLVerifcationException;
@@ -40,7 +41,7 @@ public class Offer18 {
     /**
      * Track conversion
      */
-    public static void trackConversion(Map<String, String> args) throws Offer18ClientNotInitialiseException, Offer18FormFieldRequiredException, Offer18SSLVerifcationException {
+    public static void trackConversion(Map<String, String> args) throws Offer18ClientNotInitialiseException, Offer18FormFieldRequiredException, Offer18SSLVerifcationException, Offer18FormFieldDataTypeException {
         client.trackConversion(args, configuration);
     }
 

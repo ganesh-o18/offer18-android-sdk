@@ -2,6 +2,7 @@ package com.offer18.sdk;
 
 import android.util.Log;
 
+import com.offer18.sdk.Exception.Offer18FormFieldDataTypeException;
 import com.offer18.sdk.Exception.Offer18FormFieldRequiredException;
 import com.offer18.sdk.Exception.Offer18SSLVerifcationException;
 import com.offer18.sdk.constant.Constant;
@@ -99,7 +100,7 @@ public class Offer18Client implements Client {
     }
 
     @Override
-    public String trackConversion(Map<String, String> args, Configuration configuration) throws Offer18SSLVerifcationException, Offer18FormFieldRequiredException {
+    public String trackConversion(Map<String, String> args, Configuration configuration) throws Offer18SSLVerifcationException, Offer18FormFieldRequiredException, Offer18FormFieldDataTypeException {
         HttpUrl url = this.buildEndpoint(args);
         Request request = new Request.Builder().url(url).build();
         Log.println(Log.INFO, "offer18-url", request.url().toString());
@@ -107,19 +108,19 @@ public class Offer18Client implements Client {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.println(Log.INFO, "offer18-error", Objects.requireNonNull(e.getMessage()));
+                Log.d("o18", e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 // log response if logging is enabled
-                Log.println(Log.INFO, "offer18-response", response.toString());
+                Log.d("o18", response.toString());
             }
         });
         return null;
     }
 
-    public HttpUrl buildEndpoint(Map<String, String> args) throws Offer18SSLVerifcationException, Offer18FormFieldRequiredException {
+    public HttpUrl buildEndpoint(Map<String, String> args) throws Offer18SSLVerifcationException, Offer18FormFieldRequiredException, Offer18FormFieldDataTypeException {
         HttpUrl.Builder url = new HttpUrl.Builder()
                 .scheme("https")
                 .host("ganesh-local-dev.o18-test.live")
@@ -155,9 +156,22 @@ public class Offer18Client implements Client {
         }
         for (String param : this.params) {
             String isFieldRequired = this.configuration.getStorage().get("conversion." + param + ".required");
+            String fieldDataType = this.configuration.getStorage().get("conversion." + param + ".type");
             if (!Objects.isNull(isFieldRequired) && Objects.equals(isFieldRequired, "true")) {
-                if (!args.containsKey(param)) {
+                if (!args.containsKey(param) || Objects.isNull(args.get(param)) || args.get(param).isEmpty()) {
                     throw new Offer18FormFieldRequiredException(param + " is required");
+                }
+            }
+            if (!Objects.isNull(fieldDataType)) {
+                if (args.containsKey(param) && !Objects.isNull(args.get(param)) && !args.get(param).isEmpty()) {
+                    switch (fieldDataType) {
+                        case "number":
+                            try {
+                                Float.parseFloat(args.get(param));
+                            } catch (NumberFormatException | NullPointerException e) {
+                                throw new Offer18FormFieldDataTypeException(param + " must be a number");
+                            }
+                    }
                 }
             }
             if (args.containsKey(param) && !Objects.requireNonNull(args.get(param)).isEmpty()) {
