@@ -2,9 +2,11 @@ package com.offer18.sdk;
 
 import android.util.Log;
 
+import com.offer18.sdk.Exception.Offer18SSLVerifcationException;
 import com.offer18.sdk.constant.Constant;
 import com.offer18.sdk.contract.Client;
 import com.offer18.sdk.contract.Configuration;
+import com.offer18.sdk.contract.ServiceDiscovery;
 import com.offer18.sdk.contract.Storage;
 
 import org.jetbrains.annotations.NotNull;
@@ -101,7 +103,7 @@ public class Offer18Client implements Client {
     }
 
     @Override
-    public String trackConversion(Map<String, String> args, Configuration configuration) {
+    public String trackConversion(Map<String, String> args, Configuration configuration) throws Offer18SSLVerifcationException {
         HttpUrl url = this.buildEndpoint(args);
         Request request = new Request.Builder().url(url).build();
         Log.println(Log.INFO, "offer18-url", request.url().toString());
@@ -120,11 +122,18 @@ public class Offer18Client implements Client {
         return null;
     }
 
-    public HttpUrl buildEndpoint(Map<String, String> args) {
+    public HttpUrl buildEndpoint(Map<String, String> args) throws Offer18SSLVerifcationException {
         HttpUrl.Builder url = new HttpUrl.Builder()
                 .scheme("https")
                 .host("ganesh-local-dev.o18-test.live")
                 .addPathSegments("tracking/p.php");
+        ServiceDiscovery discovery = this.configuration.getServiceDiscovery();
+        String doesSSLVerificationRequire = discovery.doesSSLVerificationRequired();
+        if (!Objects.isNull(doesSSLVerificationRequire) && Objects.equals(doesSSLVerificationRequire, "true")) {
+           if (!Objects.equals(url.getScheme$okhttp(), "https")) {
+               throw new Offer18SSLVerifcationException("SSL scheme is required");
+           }
+        }
         if (!args.containsKey(Constant.POSTBACK_TYPE) || Objects.isNull(args.get(Constant.POSTBACK_TYPE))) {
             args.put(Constant.POSTBACK_TYPE, Constant.POSTBACK_TYPE_PIXEL);
         }

@@ -19,7 +19,7 @@ import java.util.Map;
 public interface ServiceDiscovery {
     Long getHttpTimeout();
 
-    boolean doesSSLVerificationRequired();
+    String doesSSLVerificationRequired();
 
     Long serviceDiscoveryTimeout();
 
