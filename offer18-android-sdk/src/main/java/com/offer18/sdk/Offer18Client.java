@@ -140,13 +140,13 @@ public class Offer18Client implements Client {
                 .host("ganesh-local-dev.o18-test.live")
                 .addPathSegments("tracking/p.php");
         String doesSSLVerificationRequire = this.configuration.getStorage().get("http_ssl_verification");
-        if (!Objects.isNull(doesSSLVerificationRequire) && Objects.equals(doesSSLVerificationRequire, "true")) {
+        if (Objects.equals(doesSSLVerificationRequire, "true")) {
             if (!Objects.equals(url.getScheme$okhttp(), "https")) {
                 throw new Offer18SSLVerifcationException("HTTPS scheme is required");
             }
         }
         String postbackTypeRequired = this.configuration.getStorage().get("conversion.postback_type.required");
-        if (!Objects.isNull(postbackTypeRequired) && Objects.equals(postbackTypeRequired, "true")) {
+        if (Objects.equals(postbackTypeRequired, "true")) {
             if (!args.containsKey(Constant.POSTBACK_TYPE)) {
                 throw new Offer18FormFieldRequiredException("Postback type is required");
             }
@@ -155,7 +155,7 @@ public class Offer18Client implements Client {
             args.put(Constant.POSTBACK_TYPE, Constant.POSTBACK_TYPE_PIXEL);
         }
         String globalPixedRequired = this.configuration.getStorage().get("conversion.is_global_pixel.required");
-        if (!Objects.isNull(globalPixedRequired) && Objects.equals(globalPixedRequired, "true")) {
+        if (Objects.equals(globalPixedRequired, "true")) {
             if (!args.containsKey(Constant.IS_GLOBAL_PIXEL)) {
                 throw new Offer18FormFieldRequiredException("Global pixel is required");
             }
@@ -171,21 +171,19 @@ public class Offer18Client implements Client {
         for (String param : this.params) {
             String isFieldRequired = this.configuration.getStorage().get("conversion." + param + ".required");
             String fieldDataType = this.configuration.getStorage().get("conversion." + param + ".type");
-            if (!Objects.isNull(isFieldRequired) && Objects.equals(isFieldRequired, "true")) {
+            if (Objects.equals(isFieldRequired, "true")) {
                 if (!args.containsKey(param) || Objects.isNull(args.get(param)) || args.get(param).isEmpty()) {
                     throw new Offer18FormFieldRequiredException(param + " is required");
                 }
             }
-            if (!Objects.isNull(fieldDataType)) {
-                if (args.containsKey(param) && !Objects.isNull(args.get(param)) && !args.get(param).isEmpty()) {
-                    switch (fieldDataType) {
-                        case "number":
-                            try {
-                                Float.parseFloat(args.get(param));
-                            } catch (NumberFormatException | NullPointerException e) {
-                                throw new Offer18FormFieldDataTypeException(param + " must be a number");
-                            }
-                    }
+            if (args.containsKey(param) && !Objects.isNull(args.get(param)) && !args.get(param).isEmpty()) {
+                switch (fieldDataType) {
+                    case "number":
+                        try {
+                            Float.parseFloat(args.get(param));
+                        } catch (NumberFormatException | NullPointerException e) {
+                            throw new Offer18FormFieldDataTypeException(param + " must be a number");
+                        }
                 }
             }
             if (args.containsKey(param) && !Objects.requireNonNull(args.get(param)).isEmpty()) {

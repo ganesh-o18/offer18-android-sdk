@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -31,18 +30,18 @@ public class MainActivity extends AppCompatActivity {
         offerId = findViewById(R.id.offer_id);
         domain = findViewById(R.id.domain);
         accountId = findViewById(R.id.account_id);
-        tid = (EditText) findViewById(R.id.tid);
-        advSub1 = (EditText) findViewById(R.id.adv_sub1);
-        advSub2 = (EditText) findViewById(R.id.adv_sub2);
-        advSub3 = (EditText) findViewById(R.id.adv_sub3);
-        advSub4 = (EditText) findViewById(R.id.adv_sub4);
-        advSub5 = (EditText) findViewById(R.id.adv_sub5);
-        event = (EditText) findViewById(R.id.event);
-        sale = (EditText) findViewById(R.id.sale);
-        payout = (EditText) findViewById(R.id.payout);
-        coupon = (EditText) findViewById(R.id.coupon);
-        currency = (EditText) findViewById(R.id.currency);
-        postbackType = (Spinner) findViewById(R.id.postback_type);
+        tid = findViewById(R.id.tid);
+        advSub1 = findViewById(R.id.adv_sub1);
+        advSub2 = findViewById(R.id.adv_sub2);
+        advSub3 = findViewById(R.id.adv_sub3);
+        advSub4 = findViewById(R.id.adv_sub4);
+        advSub5 = findViewById(R.id.adv_sub5);
+        event = findViewById(R.id.event);
+        sale = findViewById(R.id.sale);
+        payout = findViewById(R.id.payout);
+        coupon = findViewById(R.id.coupon);
+        currency = findViewById(R.id.currency);
+        postbackType = findViewById(R.id.postback_type);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.postback_type,
@@ -50,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         postbackType.setAdapter(adapter);
-        isGlobalPixel = (Spinner) findViewById(R.id.is_global_pixel);
+        isGlobalPixel = findViewById(R.id.is_global_pixel);
         ArrayAdapter<CharSequence> adapterGlobal = ArrayAdapter.createFromResource(
                 this,
                 R.array.is_global_pixel,
@@ -58,27 +57,27 @@ public class MainActivity extends AppCompatActivity {
         );
         adapterGlobal.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         isGlobalPixel.setAdapter(adapterGlobal);
-        allowMultiConversion = (EditText) findViewById(R.id.allow_multi_conversion);
-        trackConversionBtn = (Button) findViewById(R.id.button);
+        allowMultiConversion = findViewById(R.id.allow_multi_conversion);
+        trackConversionBtn = findViewById(R.id.button);
         trackConversionBtn.setOnClickListener(v -> {
             try {
                 Offer18.init(getBaseContext(), p);
                 args.put("domain", domain.getText().toString());
-                args.put(Constant.OFFER_ID, offerId.getText().toString());
-                args.put(Constant.ACCOUNT_ID, accountId.getText().toString());
-                args.put(Constant.TID, tid.getText().toString());
-                args.put(Constant.ADV_SUB_1, advSub1.getText().toString());
-                args.put(Constant.ADV_SUB_2, advSub2.getText().toString());
-                args.put(Constant.ADV_SUB_3, advSub3.getText().toString());
-                args.put(Constant.ADV_SUB_4, advSub4.getText().toString());
-                args.put(Constant.ADV_SUB_5, advSub5.getText().toString());
-                args.put(Constant.EVENT, event.getText().toString());
-                args.put(Constant.SALE, sale.getText().toString());
-                args.put(Constant.PAYOUT, payout.getText().toString());
-                args.put(Constant.COUPON, coupon.getText().toString());
-                args.put(Constant.CURRENCY, currency.getText().toString());
-                args.put(Constant.POSTBACK_TYPE, postbackType.getSelectedItem().toString().equals("iframe") ? Constant.POSTBACK_TYPE_IFRAME : Constant.POSTBACK_TYPE_PIXEL);
-                args.put(Constant.IS_GLOBAL_PIXEL, isGlobalPixel.getSelectedItem().toString());
+                args.put("offer_id", offerId.getText().toString());
+                args.put("account_id", accountId.getText().toString());
+                args.put("tid", tid.getText().toString());
+                args.put("adv_sub1", advSub1.getText().toString());
+                args.put("adv_sub2", advSub2.getText().toString());
+                args.put("adv_sub3", advSub3.getText().toString());
+                args.put("adv_sub4", advSub4.getText().toString());
+                args.put("adv_sub5", advSub5.getText().toString());
+                args.put("event", event.getText().toString());
+                args.put("sale", sale.getText().toString());
+                args.put("payout", payout.getText().toString());
+                args.put("coupon", coupon.getText().toString());
+                args.put("currency", currency.getText().toString());
+                args.put("postback_type", postbackType.getSelectedItem().toString().equals("iframe") ? Constant.POSTBACK_TYPE_IFRAME : Constant.POSTBACK_TYPE_PIXEL);
+                args.put("is_global_pixel", isGlobalPixel.getSelectedItem().toString());
                 Offer18.trackConversion(args);
                 Toast.makeText(MainActivity.this, "Conversion Recorded  ", Toast.LENGTH_LONG).show();
             } catch (Exception e) {
