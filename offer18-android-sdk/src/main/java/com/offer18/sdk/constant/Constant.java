@@ -2,8 +2,6 @@ package com.offer18.sdk.constant;
 
 public class Constant {
     public static final String DIGEST = "digest";
-    public static final String ENV_DEBUG = "debug";
-    public static final String ENV_PRODUCTION = "production";
     public static final String DOMAIN = "domain";
     public static final String ACCOUNT_ID = "m";
     public static final String ADV_SUB_1 = "adv_sub1";

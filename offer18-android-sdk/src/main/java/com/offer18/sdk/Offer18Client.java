@@ -190,7 +190,7 @@ public class Offer18Client implements Client {
                 url.addQueryParameter(param, args.get(param));
             }
         }
-        //check if multi conversion is allowed and stored, then check if tid is valid and if so,
+        // Check if multi conversion is allowed and stored, then check if tid is valid and if so,
         // put tid back into args
         boolean doesTIDLifetimeRequiresToUpdate = true;
         String allowMultiConversion = this.configuration.getStorage().get("allow_multi_conversion");
