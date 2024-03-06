@@ -23,4 +23,5 @@ public class Constant {
     public static final String IS_GLOBAL_PIXEL = "gb";
     public static final String CURRENCY = "currency";
     public static final String ALLOW_MULTI_CONVERSION = "multi_conv";
+    public static final String SHARED_PREFERENCE = "offer18_config";
 }

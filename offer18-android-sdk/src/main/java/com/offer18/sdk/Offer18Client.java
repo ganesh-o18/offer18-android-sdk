@@ -120,6 +120,11 @@ public class Offer18Client implements Client {
         return null;
     }
 
+    @Override
+    public Configuration getConfiguration() {
+        return this.configuration;
+    }
+
     public HttpUrl buildEndpoint(Map<String, String> args) throws Offer18SSLVerifcationException, Offer18FormFieldRequiredException, Offer18FormFieldDataTypeException {
         HttpUrl.Builder url = new HttpUrl.Builder()
                 .scheme("https")

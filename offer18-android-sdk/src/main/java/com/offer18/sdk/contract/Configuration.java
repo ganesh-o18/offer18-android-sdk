@@ -1,9 +1,11 @@
 package com.offer18.sdk.contract;
 
+import com.offer18.sdk.constant.Env;
+
 public interface Configuration {
     String getLoggingMode();
 
-    String getEnv();
+    Env getEnv();
 
     String getApiKey();
 
@@ -14,4 +16,8 @@ public interface Configuration {
     Storage getStorage();
 
     void setStorage(Storage storage);
+
+    void enableDebugMode();
+
+    void enableProductionMode();
 }

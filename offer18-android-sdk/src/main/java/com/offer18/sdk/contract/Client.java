@@ -8,4 +8,5 @@ import java.util.Map;
 
 public interface Client {
     String trackConversion(Map<String, String> args, Configuration configuration) throws Offer18SSLVerifcationException, Offer18FormFieldRequiredException, Offer18FormFieldDataTypeException;
+    Configuration getConfiguration();
 }
