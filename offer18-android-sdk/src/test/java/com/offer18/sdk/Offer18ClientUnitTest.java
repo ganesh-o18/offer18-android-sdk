@@ -17,12 +17,12 @@ public class Offer18ClientUnitTest {
 
     @Test
     public void sdk_init_does_not_throws_exceptions() throws Exception {
-        Offer18.init(new HashMap<>());
+        Offer18.init(null, new HashMap<>());
     }
 
     @Test
     public void client_endpoint_returns_valid_url_when_global_pixel_is_disabled() throws Exception {
-        Offer18.init(new HashMap<>());
+        Offer18.init(null, new HashMap<>());
         Map<String, String> args = new HashMap<>();
         String domain = "ganesh-local-dev.o18-test.live";
         String accountId = "18962";
@@ -38,7 +38,7 @@ public class Offer18ClientUnitTest {
         args.put(Constant.POSTBACK_TYPE, Constant.POSTBACK_TYPE_IFRAME);
         args.put(Constant.CURRENCY, currency);
         args.put(Constant.IS_GLOBAL_PIXEL, "false");
-        HttpUrl url = new Offer18Client().buildEndpoint(args);
+        HttpUrl url = new Offer18Client(new Offer18Configuration(new Offer18CredentialManager(), new HashMap<String, String>())).buildEndpoint(args);
         assertNotNull(url.toString());
         System.out.println(url.url());
         assertEquals(url.url().getHost(), domain);
@@ -51,7 +51,7 @@ public class Offer18ClientUnitTest {
 
     @Test
     public void client_endpoint_returns_valid_url_when_global_pixel_is_enabled() throws Exception {
-        Offer18.init(new HashMap<>());
+        Offer18.init(null, new HashMap<>());
         Map<String, String> args = new HashMap<>();
         String domain = "ganesh-local-dev.o18-test.live";
         String accountId = "18962";
@@ -67,7 +67,7 @@ public class Offer18ClientUnitTest {
         args.put(Constant.POSTBACK_TYPE, Constant.POSTBACK_TYPE_IFRAME);
         args.put(Constant.CURRENCY, currency);
         args.put(Constant.IS_GLOBAL_PIXEL, "true");
-        HttpUrl url = new Offer18Client().buildEndpoint(args);
+        HttpUrl url = new Offer18Client(new Offer18Configuration(new Offer18CredentialManager(), new HashMap<String, String >())).buildEndpoint(args);
         assertNotNull(url.toString());
         System.out.println(url.url());
         assertEquals(url.url().getHost(), domain);
