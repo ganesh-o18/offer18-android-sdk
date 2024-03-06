@@ -37,11 +37,14 @@ public class Offer18Client implements Client {
 
     public Offer18Client(Configuration configuration) {
         this.configuration = configuration;
+        String currentDigest = this.configuration.getStorage().get(Constant.DIGEST);
+        if (Objects.isNull(currentDigest) || currentDigest.isEmpty()) {
+            Offer18DefaultConfig.loadDefaultConfig(this.configuration.getStorage());
+        }
         long currentUnixTimeStamp = Calendar.getInstance().getTimeInMillis() / 1000;
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
         this.httpClient = clientBuilder.build();
         this.httpClient.dispatcher().setMaxRequests(1);
-        // Service discovery document is stale, update it.
         String url = "https://ganesh-local-dev.o18-test.live/m/files/cron-jobs/service_discovery.php";
         Request request = new Request.Builder().url(url).build();
         this.httpClient.newCall(request).enqueue(new Callback() {
@@ -52,7 +55,6 @@ public class Offer18Client implements Client {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Log.d("sd-1", response.toString());
                 if (!response.isSuccessful()) {
                     Log.d("o18", Integer.toString(response.code()));
                 }
@@ -67,9 +69,8 @@ public class Offer18Client implements Client {
                 JSONObject serviceDocument, services, http, serviceDiscovery, conversion;
                 try {
                     serviceDocument = new JSONObject(json);
-                    String digest = serviceDocument.getString("digest");
-                    storage.get("digest");
-                    storage.set("digest", digest);
+                    String digest = serviceDocument.getString(Constant.DIGEST);
+                    storage.set(Constant.DIGEST, digest);
                     http = serviceDocument.getJSONObject("http");
                     serviceDiscovery = serviceDocument.getJSONObject("service_discovery");
                     storage.set("service_document_updated_at", Long.toString(currentUnixTimeStamp));
@@ -120,7 +121,7 @@ public class Offer18Client implements Client {
 
     public HttpUrl buildEndpoint(Map<String, String> args) throws Offer18SSLVerifcationException, Offer18FormFieldRequiredException {
         HttpUrl.Builder url = new HttpUrl.Builder()
-                .scheme("http")
+                .scheme("https")
                 .host("ganesh-local-dev.o18-test.live")
                 .addPathSegments("tracking/p.php");
         String doesSSLVerificationRequire = this.configuration.getStorage().get("http_ssl_verification");

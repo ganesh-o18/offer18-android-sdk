@@ -1,13 +1,17 @@
 package com.offer18.sdk;
 
-import com.offer18.sdk.contract.ServiceDiscovery;
 import com.offer18.sdk.contract.Storage;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 public class Offer18DefaultConfig {
-    protected Storage storage;
+
+    public static boolean loadDefaultConfig(Storage storage) {
+        if (Objects.isNull(storage)) {
+            return false;
+        }
+        storage.set("http_ssl_verification", "false");
+        storage.set("http_time_out", "2000");
+        return true;
+    }
 }
