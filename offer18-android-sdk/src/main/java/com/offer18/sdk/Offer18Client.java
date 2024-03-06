@@ -6,6 +6,7 @@ import com.offer18.sdk.Exception.Offer18FormFieldDataTypeException;
 import com.offer18.sdk.Exception.Offer18FormFieldRequiredException;
 import com.offer18.sdk.Exception.Offer18SSLVerifcationException;
 import com.offer18.sdk.constant.Constant;
+import com.offer18.sdk.constant.Env;
 import com.offer18.sdk.contract.Client;
 import com.offer18.sdk.contract.Configuration;
 import com.offer18.sdk.contract.Storage;
@@ -57,15 +58,21 @@ public class Offer18Client implements Client {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    Log.d("o18", Integer.toString(response.code()));
+                    if (configuration.getEnv() == Env.DEBUG) {
+                        Log.d("o18", Integer.toString(response.code()));
+                    }
                 }
                 Storage storage = configuration.getStorage();
                 if (Objects.isNull(storage)) {
-                    Log.d("o18", "storage not available");
+                    if (configuration.getEnv() == Env.DEBUG) {
+                        Log.d("o18", "storage not available");
+                    }
                 }
                 String json = response.body() != null ? response.body().string() : null;
                 if (Objects.isNull(json) || json.isEmpty()) {
-                    Log.d("o18", "response is not valid json");
+                    if (configuration.getEnv() == Env.DEBUG) {
+                        Log.d("o18", "response is not valid json");
+                    }
                 }
                 JSONObject serviceDocument, services, http, serviceDiscovery, conversion;
                 try {
@@ -93,7 +100,9 @@ public class Offer18Client implements Client {
                         storage.set("conversion." + formName + "." + "type", dataType);
                     }
                 } catch (JSONException e) {
-                    Log.d("o18", "json parse error, response is not valid json");
+                    if (configuration.getEnv() == Env.DEBUG) {
+                        Log.d("o18", "json parse error, response is not valid json");
+                    }
                 }
             }
         });
