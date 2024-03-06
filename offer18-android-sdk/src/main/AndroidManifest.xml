@@ -1,8 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <receiver android:name="com.offer18.sdk.receiver.InstallReferrerBroadcastReceiver">
-        <intent-filter>
-            <action android:name="com.android.INSTALL_REFERRER" />
-        </intent-filter>
-    </receiver>
-</manifest>
+<manifest />

@@ -1,6 +1,7 @@
 package com.example.testapp;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,16 +21,16 @@ public class MainActivity extends AppCompatActivity {
     HashMap<String, String> args = new HashMap<String, String>();
     View trackConversionBtn;
     EditText offerId, accountId, tid, domain, advSub1, advSub2, advSub3, advSub4, advSub5, event, payout, sale, coupon,
-              allowMultiConversion, currency;
+            allowMultiConversion, currency;
     Spinner postbackType, isGlobalPixel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        offerId = (EditText) findViewById(R.id.offer_id);
-        domain = (EditText) findViewById(R.id.domain);
-        accountId = (EditText) findViewById(R.id.account_id);
+        offerId = findViewById(R.id.offer_id);
+        domain = findViewById(R.id.domain);
+        accountId = findViewById(R.id.account_id);
         tid = (EditText) findViewById(R.id.tid);
         advSub1 = (EditText) findViewById(R.id.adv_sub1);
         advSub2 = (EditText) findViewById(R.id.adv_sub2);
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                     args.put("domain", domain.getText().toString());
                     args.put(Constant.OFFER_ID, offerId.getText().toString());
                     args.put(Constant.ACCOUNT_ID, accountId.getText().toString());
-                    args.put(Constant.TID, tid.getText().toString());
+//                    args.put(Constant.TID, tid.getText().toString());
                     args.put(Constant.ADV_SUB_1, advSub1.getText().toString());
                     args.put(Constant.ADV_SUB_2, advSub2.getText().toString());
                     args.put(Constant.ADV_SUB_3, advSub3.getText().toString());
@@ -83,7 +84,8 @@ public class MainActivity extends AppCompatActivity {
                     Offer18.trackConversion(args);
                     Toast.makeText(MainActivity.this, "Conversion Recorded  ", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    Log.d("o18", e.getMessage());
+                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
