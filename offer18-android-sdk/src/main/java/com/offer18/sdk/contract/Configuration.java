@@ -11,8 +11,6 @@ public interface Configuration {
 
     String getApiSecret();
 
-    ServiceDiscovery getServiceDiscovery();
-
     Storage getStorage();
 
     void setStorage(Storage storage);

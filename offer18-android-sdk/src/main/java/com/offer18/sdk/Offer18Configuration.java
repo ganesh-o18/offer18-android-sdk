@@ -10,7 +10,6 @@ import java.util.Map;
 
 public class Offer18Configuration implements Configuration {
     protected CredentialManager credentialManager;
-    protected boolean loggingEnabled = false;
     protected Env env = Env.PRODUCTION;
     protected Storage storage;
 
@@ -36,11 +35,6 @@ public class Offer18Configuration implements Configuration {
     @Override
     public String getApiSecret() {
         return this.credentialManager.getApiSecret();
-    }
-
-    @Override
-    public ServiceDiscovery getServiceDiscovery() {
-        return new Offer18ServiceDiscovery(this.storage);
     }
 
     @Override
