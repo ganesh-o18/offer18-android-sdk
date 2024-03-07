@@ -55,6 +55,7 @@ public class TrackConversionWorker implements Runnable {
                 .host("ganesh-local-dev.o18-test.live")
                 .addPathSegments("tracking/p.php");
         String doesSSLVerificationRequire = this.configuration.get("http_ssl_verification");
+        Log.d("o18", "ssl-ver " + doesSSLVerificationRequire);
         if (Objects.equals(doesSSLVerificationRequire, "true")) {
             if (!Objects.equals(url.getScheme$okhttp(), "https")) {
                 throw new Offer18SSLVerifcationException("HTTPS scheme is required");
@@ -66,7 +67,8 @@ public class TrackConversionWorker implements Runnable {
         for (String key : args.keySet()) {
             String formName = this.configuration.get("conversion." + key + ".form_name");
             String required = this.configuration.get("conversion." + key + ".required");
-            String dataType = this.configuration.get("conversion." + key + ".data_type");
+            String dataType = this.configuration.get("conversion." + key + ".type");
+            Log.d("o18", "form-name: " + formName + " req: " + required + " data_type: " + dataType);
             if (Objects.equals(required, "true")) {
                 if (!args.containsKey(formName)) {
                     throw new Offer18FormFieldRequiredException("Postback type is required");
