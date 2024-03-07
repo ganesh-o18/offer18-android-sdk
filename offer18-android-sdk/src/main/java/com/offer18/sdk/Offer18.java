@@ -22,7 +22,7 @@ public class Offer18 {
      */
     protected static Client client;
 
-    protected static Env env = Env.PRODUCTION;
+    protected static Env env = Env.DEBUG;
 
     /**
      * Init SDK

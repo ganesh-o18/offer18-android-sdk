@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         trackConversionBtn = findViewById(R.id.button);
         trackConversionBtn.setOnClickListener(v -> {
             try {
-                Offer18.init(getBaseContext(), p);
+                Offer18.init(getBaseContext());
                 args.put("domain", domain.getText().toString());
                 args.put("o", offerId.getText().toString());
                 args.put("a", accountId.getText().toString());
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 args.put("currency", currency.getText().toString());
                 args.put("postback_type", postbackType.getSelectedItem().toString().equals("iframe") ? Constant.POSTBACK_TYPE_IFRAME : Constant.POSTBACK_TYPE_PIXEL);
                 args.put("is_global_pixel", isGlobalPixel.getSelectedItem().toString());
-                Offer18.trackConversion(args);
+//                Offer18.trackConversion(args);
                 Toast.makeText(MainActivity.this, "Conversion Recorded  ", Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 Log.d("o18", e.getMessage());
