@@ -3,12 +3,11 @@ package com.offer18.sdk;
 import com.offer18.sdk.constant.Env;
 import com.offer18.sdk.contract.Configuration;
 import com.offer18.sdk.contract.CredentialManager;
-import com.offer18.sdk.contract.ServiceDiscovery;
 import com.offer18.sdk.contract.Storage;
 
 import java.util.Map;
 
-public class Offer18Configuration implements Configuration {
+class Offer18Configuration implements Configuration {
     protected CredentialManager credentialManager;
     protected Env env = Env.PRODUCTION;
     protected Storage storage;
@@ -54,5 +53,20 @@ public class Offer18Configuration implements Configuration {
     @Override
     public void enableProductionMode() {
         this.env = Env.PRODUCTION;
+    }
+
+    @Override
+    public String get(String key) {
+        return this.getStorage().get(key);
+    }
+
+    @Override
+    public boolean set(String key, String value) {
+       return this.storage.set(key, value);
+    }
+
+    @Override
+    public boolean remove(String key) {
+       return this.storage.remove(key);
     }
 }

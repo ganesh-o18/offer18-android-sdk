@@ -18,4 +18,10 @@ public interface Configuration {
     void enableDebugMode();
 
     void enableProductionMode();
+
+    String get(String key);
+
+    boolean set(String key, String value);
+
+    boolean remove(String key);
 }

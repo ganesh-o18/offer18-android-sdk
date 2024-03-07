@@ -28,21 +28,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class Offer18Client implements Client {
+class Offer18Client implements Client {
     protected Configuration configuration;
-    private final String[] params = {Constant.OFFER_ID, Constant.ACCOUNT_ID, Constant.POSTBACK_TYPE,
-            Constant.IS_GLOBAL_PIXEL, Constant.EVENT, Constant.COUPON, Constant.TID,
-            Constant.ADV_SUB_1, Constant.ADV_SUB_2, Constant.ADV_SUB_3, Constant.ADV_SUB_4,
-            Constant.ADV_SUB_5, Constant.SALE, Constant.PAYOUT, Constant.CURRENCY
-    };
     private final OkHttpClient httpClient;
 
     public Offer18Client(Configuration configuration) {
         this.configuration = configuration;
-        String currentDigest = this.configuration.getStorage().get(Constant.DIGEST);
-        if (Objects.isNull(currentDigest) || currentDigest.isEmpty()) {
-            Offer18DefaultConfig.loadDefaultConfig(this.configuration.getStorage());
-        }
+        String currentDigest = this.configuration.get(Constant.DIGEST);
         long currentUnixTimeStamp = Calendar.getInstance().getTimeInMillis() / 1000;
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
         this.httpClient = clientBuilder.build();
@@ -139,80 +131,34 @@ public class Offer18Client implements Client {
                 .scheme("https")
                 .host("ganesh-local-dev.o18-test.live")
                 .addPathSegments("tracking/p.php");
-        String doesSSLVerificationRequire = this.configuration.getStorage().get("http_ssl_verification");
+        String doesSSLVerificationRequire = this.configuration.get("http_ssl_verification");
         if (Objects.equals(doesSSLVerificationRequire, "true")) {
             if (!Objects.equals(url.getScheme$okhttp(), "https")) {
                 throw new Offer18SSLVerifcationException("HTTPS scheme is required");
             }
         }
-        String postbackTypeRequired = this.configuration.getStorage().get("conversion.postback_type.required");
-        if (Objects.equals(postbackTypeRequired, "true")) {
-            if (!args.containsKey(Constant.POSTBACK_TYPE)) {
-                throw new Offer18FormFieldRequiredException("Postback type is required");
-            }
-        }
         if (!args.containsKey(Constant.POSTBACK_TYPE) || Objects.isNull(args.get(Constant.POSTBACK_TYPE))) {
             args.put(Constant.POSTBACK_TYPE, Constant.POSTBACK_TYPE_PIXEL);
         }
-        String globalPixedRequired = this.configuration.getStorage().get("conversion.is_global_pixel.required");
-        if (Objects.equals(globalPixedRequired, "true")) {
-            if (!args.containsKey(Constant.IS_GLOBAL_PIXEL)) {
-                throw new Offer18FormFieldRequiredException("Global pixel is required");
-            }
-        }
-        if (args.containsKey(Constant.IS_GLOBAL_PIXEL)) {
-            if (Objects.requireNonNull(args.get(Constant.IS_GLOBAL_PIXEL)).equals("true")) {
-                args.put(Constant.IS_GLOBAL_PIXEL, "1");
-                args.remove(Constant.OFFER_ID);
-            } else {
-                args.remove(Constant.IS_GLOBAL_PIXEL);
-            }
-        }
-        for (String param : this.params) {
-            String isFieldRequired = this.configuration.getStorage().get("conversion." + param + ".required");
-            String fieldDataType = this.configuration.getStorage().get("conversion." + param + ".type");
-            if (Objects.equals(isFieldRequired, "true")) {
-                if (!args.containsKey(param) || Objects.isNull(args.get(param)) || args.get(param).isEmpty()) {
-                    throw new Offer18FormFieldRequiredException(param + " is required");
+        for (String key : args.keySet()) {
+            String formName = this.configuration.get("conversion." + key + ".form_name");
+            String required = this.configuration.get("conversion." + key + ".required");
+            String dataType = this.configuration.get("conversion." + key + ".data_type");
+            if (Objects.equals(required, "true")) {
+                if (!args.containsKey(formName)) {
+                    throw new Offer18FormFieldRequiredException("Postback type is required");
                 }
             }
-            if (args.containsKey(param) && !Objects.isNull(args.get(param)) && !args.get(param).isEmpty()) {
-                switch (fieldDataType) {
-                    case "number":
-                        try {
-                            Float.parseFloat(args.get(param));
-                        } catch (NumberFormatException | NullPointerException e) {
-                            throw new Offer18FormFieldDataTypeException(param + " must be a number");
-                        }
+            if (args.containsKey(formName) && !Objects.isNull(args.get(formName)) && !args.get(formName).isEmpty()) {
+                if (dataType.equals("number")) {
+                    try {
+                        Float.parseFloat(args.get(formName));
+                    } catch (NumberFormatException | NullPointerException e) {
+                        throw new Offer18FormFieldDataTypeException(formName + " must be a number");
+                    }
                 }
             }
-            if (args.containsKey(param) && !Objects.requireNonNull(args.get(param)).isEmpty()) {
-                url.addQueryParameter(param, args.get(param));
-            }
-        }
-        // Check if multi conversion is allowed and stored, then check if tid is valid and if so,
-        // put tid back into args
-        boolean doesTIDLifetimeRequiresToUpdate = true;
-        String allowMultiConversion = this.configuration.getStorage().get("allow_multi_conversion");
-        if (!Objects.isNull(allowMultiConversion) && Objects.equals(allowMultiConversion, "true")) {
-            if (!args.containsKey(Constant.ALLOW_MULTI_CONVERSION)) {
-                args.put(Constant.ALLOW_MULTI_CONVERSION, "true");
-                doesTIDLifetimeRequiresToUpdate = false;
-            }
-        }
-        if (args.containsKey(Constant.ALLOW_MULTI_CONVERSION) && !Objects.isNull(args.get(Constant.ALLOW_MULTI_CONVERSION))) {
-            if (Objects.equals(args.get(Constant.ALLOW_MULTI_CONVERSION), "true")) {
-                this.configuration.getStorage().set("allow_multi_conversion", "true");
-                this.configuration.getStorage().set("tid", args.get(Constant.TID));
-                if (doesTIDLifetimeRequiresToUpdate) {
-                    long tidValidTill = (Calendar.getInstance().getTimeInMillis() / 1000) + (24 * 30 * 60 * 60);
-                    this.configuration.getStorage().set("tid_valid_till", Long.toString(tidValidTill));
-                }
-            } else if (Objects.equals(args.get(Constant.ALLOW_MULTI_CONVERSION), "false")) {
-                this.configuration.getStorage().remove("allow_multi_conversion");
-                this.configuration.getStorage().remove("tid");
-                this.configuration.getStorage().remove("tid_valid_till");
-            }
+            url.addQueryParameter(key, args.get(key));
         }
         return url.build();
     }
