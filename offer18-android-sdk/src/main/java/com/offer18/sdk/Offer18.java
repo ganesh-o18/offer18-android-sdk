@@ -50,7 +50,7 @@ public class Offer18 {
     /**
      * Track conversion
      */
-    public static void trackConversion(Map<String, String> args) throws Offer18FormFieldRequiredException, Offer18SSLVerifcationException, Offer18FormFieldDataTypeException, Offer18ClientNotInitialiseException {
+    public static void trackConversion(Map<String, String> args) throws Exception {
         if (Objects.isNull(client)) {
             throw new Offer18ClientNotInitialiseException("Client is not initialised");
         }

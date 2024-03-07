@@ -68,9 +68,9 @@ public class TrackConversionWorker implements Runnable {
             String formName = this.configuration.get("conversion." + key + ".form_name");
             String required = this.configuration.get("conversion." + key + ".required");
             String dataType = this.configuration.get("conversion." + key + ".type");
-            Log.d("o18", "form-name: " + formName + " req: " + required + " data_type: " + dataType);
+            Log.d("o18", "key: " + key + " form-name: " + formName + " req: " + required + " data_type: " + dataType);
             if (Objects.equals(required, "true")) {
-                if (!args.containsKey(formName)) {
+                if (!args.containsKey(formName) || Objects.isNull(args.get(formName)) || args.get(formName).isEmpty()) {
                     throw new Offer18FormFieldRequiredException("Postback type is required");
                 }
             }
@@ -79,6 +79,7 @@ public class TrackConversionWorker implements Runnable {
                     try {
                         Float.parseFloat(args.get(formName));
                     } catch (NumberFormatException | NullPointerException e) {
+                        Log.d("o18", formName + " must be a number");
                         throw new Offer18FormFieldDataTypeException(formName + " must be a number");
                     }
                 }

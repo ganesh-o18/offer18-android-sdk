@@ -7,6 +7,6 @@ import com.offer18.sdk.Exception.Offer18SSLVerifcationException;
 import java.util.Map;
 
 public interface Client {
-    String trackConversion(Map<String, String> args, Configuration configuration) throws Offer18SSLVerifcationException, Offer18FormFieldRequiredException, Offer18FormFieldDataTypeException;
+    String trackConversion(Map<String, String> args, Configuration configuration) throws Exception;
     Configuration getConfiguration();
 }

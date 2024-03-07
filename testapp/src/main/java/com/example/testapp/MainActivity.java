@@ -76,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
                 args.put("payout", payout.getText().toString());
                 args.put("coupon", coupon.getText().toString());
                 args.put("currency", currency.getText().toString());
-                args.put("postback_type", postbackType.getSelectedItem().toString().equals("iframe") ? Constant.POSTBACK_TYPE_IFRAME : Constant.POSTBACK_TYPE_PIXEL);
-                args.put("is_global_pixel", isGlobalPixel.getSelectedItem().toString());
+                args.put("t", postbackType.getSelectedItem().toString().equals("iframe") ? Constant.POSTBACK_TYPE_IFRAME : Constant.POSTBACK_TYPE_PIXEL);
+                args.put("gb", isGlobalPixel.getSelectedItem().toString());
                 Offer18.trackConversion(args);
                 Toast.makeText(MainActivity.this, "Conversion Recorded  ", Toast.LENGTH_LONG).show();
             } catch (Exception e) {

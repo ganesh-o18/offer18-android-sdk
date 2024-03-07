@@ -28,8 +28,12 @@ class Offer18Client implements Client {
     }
 
     @Override
-    public String trackConversion(Map<String, String> args, Configuration configuration) throws Offer18SSLVerifcationException, Offer18FormFieldRequiredException, Offer18FormFieldDataTypeException {
-        new Thread(new TrackConversionWorker(remoteConfigDownloadSignal, this.httpClient, this.configuration, args)).start();
+    public String trackConversion(Map<String, String> args, Configuration configuration) throws Exception {
+        try {
+            new Thread(new TrackConversionWorker(remoteConfigDownloadSignal, this.httpClient, this.configuration, args)).start();
+        } catch (RuntimeException e) {
+            throw new Exception(e.getMessage());
+        }
         return null;
     }
 
