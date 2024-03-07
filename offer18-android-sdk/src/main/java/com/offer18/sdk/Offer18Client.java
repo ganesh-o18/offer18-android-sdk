@@ -20,17 +20,23 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CountedCompleter;
+import java.util.concurrent.ExecutorService;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Dispatcher;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 class Offer18Client implements Client {
+    protected boolean configurationInitialised = false;
     protected Configuration configuration;
     private final OkHttpClient httpClient;
+    protected CountDownLatch downLatch = new CountDownLatch(1);
 
     public Offer18Client(Configuration configuration) {
         this.configuration = configuration;
@@ -44,7 +50,7 @@ class Offer18Client implements Client {
         this.httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                downLatch.countDown();
             }
 
             @Override
@@ -91,6 +97,8 @@ class Offer18Client implements Client {
                         storage.set("conversion." + formName + "." + "required", Boolean.toString(required));
                         storage.set("conversion." + formName + "." + "type", dataType);
                     }
+                    configurationInitialised = true;
+                    downLatch.countDown();
                 } catch (JSONException e) {
                     if (configuration.getEnv() == Env.DEBUG) {
                         Log.d("o18", "json parse error, response is not valid json");
@@ -102,6 +110,16 @@ class Offer18Client implements Client {
 
     @Override
     public String trackConversion(Map<String, String> args, Configuration configuration) throws Offer18SSLVerifcationException, Offer18FormFieldRequiredException, Offer18FormFieldDataTypeException {
+        new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    downLatch.await();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }.run();
         HttpUrl url = this.buildEndpoint(args);
         Request request = new Request.Builder().url(url).build();
         Log.println(Log.INFO, "offer18-url", request.url().toString());
