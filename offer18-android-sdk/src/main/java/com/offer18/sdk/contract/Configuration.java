@@ -24,4 +24,6 @@ public interface Configuration {
     boolean set(String key, String value);
 
     boolean remove(String key);
+
+    long getHttpDefaultTimeout();
 }

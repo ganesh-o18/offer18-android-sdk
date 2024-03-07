@@ -16,6 +16,10 @@ class Offer18Configuration implements Configuration {
         this.credentialManager = credentialManager;
     }
 
+    public Offer18Configuration(Map<String, String> config) {
+
+    }
+
     @Override
     public String getLoggingMode() {
         return null;
@@ -62,11 +66,16 @@ class Offer18Configuration implements Configuration {
 
     @Override
     public boolean set(String key, String value) {
-       return this.storage.set(key, value);
+        return this.storage.set(key, value);
     }
 
     @Override
     public boolean remove(String key) {
-       return this.storage.remove(key);
+        return this.storage.remove(key);
+    }
+
+    @Override
+    public long getHttpDefaultTimeout() {
+        return 2000;
     }
 }

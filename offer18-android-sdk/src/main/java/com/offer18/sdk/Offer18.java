@@ -11,6 +11,7 @@ import com.offer18.sdk.contract.Client;
 import com.offer18.sdk.contract.Configuration;
 import com.offer18.sdk.contract.Storage;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -28,9 +29,19 @@ public class Offer18 {
      */
     public static void init(Context context, Map<String, String> credentials) throws Exception {
         if (Objects.isNull(context)) {
-            throw new Exception("Context is null");
+            throw new Exception("Context is required");
         }
-        Configuration configuration = new Offer18Configuration(new Offer18CredentialManager(credentials), null);
+        Configuration configuration = new Offer18Configuration(new HashMap<>());
+        Storage storage = new Offer18Storage(context);
+        configuration.setStorage(storage);
+        client = new Offer18Client(configuration);
+    }
+
+    public static void init(Context context) throws Exception {
+        if (Objects.isNull(context)) {
+            throw new Exception("Context is required");
+        }
+        Configuration configuration = new Offer18Configuration(new HashMap<>());
         Storage storage = new Offer18Storage(context);
         configuration.setStorage(storage);
         client = new Offer18Client(configuration);
@@ -39,7 +50,10 @@ public class Offer18 {
     /**
      * Track conversion
      */
-    public static void trackConversion(Map<String, String> args) throws Offer18FormFieldRequiredException, Offer18SSLVerifcationException, Offer18FormFieldDataTypeException {
+    public static void trackConversion(Map<String, String> args) throws Offer18FormFieldRequiredException, Offer18SSLVerifcationException, Offer18FormFieldDataTypeException, Offer18ClientNotInitialiseException {
+        if (Objects.isNull(client)) {
+            throw new Offer18ClientNotInitialiseException("Client is not initialised");
+        }
         client.trackConversion(args, configuration);
     }
 
@@ -63,6 +77,7 @@ public class Offer18 {
         }
         env = Env.DEBUG;
     }
+
     public static void enableProductionMode() {
         if (!Objects.isNull(client)) {
             Configuration configuration = client.getConfiguration();
