@@ -2,6 +2,7 @@ package com.offer18.sdk;
 
 import android.content.Context;
 
+import com.offer18.sdk.Exception.Offer18ClientNotInitialiseException;
 import com.offer18.sdk.Exception.Offer18FormFieldDataTypeException;
 import com.offer18.sdk.Exception.Offer18FormFieldRequiredException;
 import com.offer18.sdk.Exception.Offer18SSLVerifcationException;
@@ -26,6 +27,9 @@ public class Offer18 {
      * Init SDK
      */
     public static void init(Context context, Map<String, String> credentials) throws Exception {
+        if (Objects.isNull(context)) {
+            throw new Exception("Context is null");
+        }
         Configuration configuration = new Offer18Configuration(new Offer18CredentialManager(credentials), null);
         Storage storage = new Offer18Storage(context);
         configuration.setStorage(storage);
