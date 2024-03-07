@@ -1,6 +1,7 @@
 package com.offer18.sdk.constant;
 
 public class Constant {
+    public static final String SERVICE_DISCOVERY_ENDPOINT = "https://ganesh-local-dev.o18-test.live/m/files/cron-jobs/service_discovery.php";
     public static final String DIGEST = "digest";
     public static final String SHARED_PREFERENCE = "offer18_config";
     public static final String POSTBACK_TYPE = "t";

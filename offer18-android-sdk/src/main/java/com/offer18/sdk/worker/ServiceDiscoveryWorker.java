@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -37,19 +36,16 @@ public class ServiceDiscoveryWorker implements Runnable {
 
     @Override
     public void run() {
-       Log.d("o18", "calling service discovery");
-        HttpUrl.Builder url = new HttpUrl.Builder()
-                .scheme("https")
-                .host("ganesh-local-dev.o18-test.live")
-                .addPathSegments("cron-jobs/service_discovery.php");
-        Request request = new Request.Builder().url(url.build()).build();
+        Log.d("o18", "calling service discovery");
+        Request request = new Request.Builder().url(Constant.SERVICE_DISCOVERY_ENDPOINT).build();
         try {
             Response response = this.httpClient.newCall(request).execute();
+            Log.d("o18", response.toString());
             if (response.isSuccessful()) {
                 this.onResponse(response);
             }
         } catch (IOException e) {
-           Log.d("o18.sd", e.getMessage());
+            Log.d("o18", e.getMessage());
         }
     }
 
