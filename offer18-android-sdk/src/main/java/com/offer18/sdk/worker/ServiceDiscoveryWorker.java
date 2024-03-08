@@ -44,11 +44,17 @@ public class ServiceDiscoveryWorker implements Runnable {
             Response response = this.httpClient.newCall(request).execute();
             Log.d("o18", response.toString());
             Log.d("o18", "" + response.code());
+            if (response.code() == 204) {
+                Log.d("o18", "no change in remote config");
+                this.remoteConfigDownloadSignal.countDown();
+                return;
+            }
             if (response.isSuccessful()) {
                 this.onResponse(response);
             }
         } catch (IOException e) {
             Log.d("o18", e.getMessage());
+            this.remoteConfigDownloadSignal.countDown();
         }
     }
 
