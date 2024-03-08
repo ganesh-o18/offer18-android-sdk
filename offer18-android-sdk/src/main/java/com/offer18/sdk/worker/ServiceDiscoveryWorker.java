@@ -37,10 +37,13 @@ public class ServiceDiscoveryWorker implements Runnable {
     @Override
     public void run() {
         Log.d("o18", "calling service discovery");
-        Request request = new Request.Builder().url(Constant.SERVICE_DISCOVERY_ENDPOINT).build();
+        String url = Constant.SERVICE_DISCOVERY_ENDPOINT + "?digest=" + this.configuration.get(Constant.DIGEST);
+        Log.d("o18", url);
+        Request request = new Request.Builder().url(url).build();
         try {
             Response response = this.httpClient.newCall(request).execute();
             Log.d("o18", response.toString());
+            Log.d("o18", "" + response.code());
             if (response.isSuccessful()) {
                 this.onResponse(response);
             }

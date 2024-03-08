@@ -1,8 +1,5 @@
 package com.offer18.sdk;
 
-import com.offer18.sdk.Exception.Offer18FormFieldDataTypeException;
-import com.offer18.sdk.Exception.Offer18FormFieldRequiredException;
-import com.offer18.sdk.Exception.Offer18SSLVerifcationException;
 import com.offer18.sdk.constant.Constant;
 import com.offer18.sdk.contract.Client;
 import com.offer18.sdk.contract.Configuration;
