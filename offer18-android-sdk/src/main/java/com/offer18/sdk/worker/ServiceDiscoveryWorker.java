@@ -16,10 +16,12 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okio.Timeout;
 
 public class ServiceDiscoveryWorker implements Runnable {
     CountDownLatch remoteConfigDownloadSignal;
