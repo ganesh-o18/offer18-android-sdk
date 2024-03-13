@@ -3,9 +3,6 @@ package com.offer18.sdk;
 import android.content.Context;
 
 import com.offer18.sdk.Exception.Offer18ClientNotInitialiseException;
-import com.offer18.sdk.Exception.Offer18FormFieldDataTypeException;
-import com.offer18.sdk.Exception.Offer18FormFieldRequiredException;
-import com.offer18.sdk.Exception.Offer18SSLVerifcationException;
 import com.offer18.sdk.constant.Env;
 import com.offer18.sdk.contract.Client;
 import com.offer18.sdk.contract.Configuration;
@@ -96,7 +93,6 @@ public class Offer18 {
             }
         }
         return Env.DEBUG == env;
-
     }
 
     public static boolean isProductionModeEnabled() {
