@@ -6,7 +6,9 @@ import com.offer18.sdk.Exception.Offer18FormFieldDataTypeException;
 import com.offer18.sdk.Exception.Offer18FormFieldRequiredException;
 import com.offer18.sdk.Exception.Offer18SSLVerifcationException;
 import com.offer18.sdk.constant.Constant;
+import com.offer18.sdk.contract.Callback;
 import com.offer18.sdk.contract.Configuration;
+import com.offer18.sdk.response.TrackConversionResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,12 +29,21 @@ public class TrackConversionWorker implements Runnable {
     OkHttpClient httpClient;
     Configuration configuration;
     Map<String, String> args;
+    Callback callback;
 
     public TrackConversionWorker(CountDownLatch remoteConfigDownloadSignal, OkHttpClient okHttpClient, Configuration configuration, Map<String, String> args) {
         this.remoteConfigDownloadSignal = remoteConfigDownloadSignal;
         this.httpClient = okHttpClient;
         this.configuration = configuration;
         this.args = args;
+    }
+
+    public TrackConversionWorker(CountDownLatch remoteConfigDownloadSignal, OkHttpClient okHttpClient, Configuration configuration, Map<String, String> args, Callback callback) {
+        this.remoteConfigDownloadSignal = remoteConfigDownloadSignal;
+        this.httpClient = okHttpClient;
+        this.configuration = configuration;
+        this.args = args;
+        this.callback = callback;
     }
 
     @Override
@@ -44,11 +55,17 @@ public class TrackConversionWorker implements Runnable {
             Log.println(Log.INFO, "offer18-url", request.url().toString());
             Call call = this.httpClient.newCall(request);
             Response response = call.execute();
+            if (!Objects.isNull(this.callback)) {
+                this.callback.onSuccess(new TrackConversionResponse());
+            }
             Log.d("o18-con", response.toString());
         } catch (InterruptedException | Offer18SSLVerifcationException |
                  Offer18FormFieldRequiredException | Offer18FormFieldDataTypeException |
                  RuntimeException | IOException e) {
-            throw new RuntimeException(e);
+            if (!Objects.isNull(this.callback)) {
+                TrackConversionResponse response = new TrackConversionResponse(e.getMessage());
+                this.callback.onError(response);
+            }
         }
     }
 
@@ -77,7 +94,7 @@ public class TrackConversionWorker implements Runnable {
                 Log.d("o18", "key: " + key + " form-name: " + formName + " req: " + required + " data_type: " + dataType);
                 if (Objects.equals(required, "true")) {
                     if (!args.containsKey(formName) || Objects.isNull(args.get(formName)) || args.get(formName).isEmpty()) {
-                        throw new Offer18FormFieldRequiredException("Postback type is required");
+                        throw new Offer18FormFieldRequiredException(formName + " is required");
                     }
                 }
                 if (args.containsKey(formName) && !Objects.isNull(args.get(formName)) && !args.get(formName).isEmpty()) {

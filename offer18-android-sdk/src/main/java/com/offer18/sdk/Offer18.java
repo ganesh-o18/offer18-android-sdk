@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.offer18.sdk.Exception.Offer18ClientNotInitialiseException;
 import com.offer18.sdk.constant.Env;
+import com.offer18.sdk.contract.Callback;
 import com.offer18.sdk.contract.Client;
 import com.offer18.sdk.contract.Configuration;
 import com.offer18.sdk.contract.Storage;
@@ -52,6 +53,16 @@ public class Offer18 {
             throw new Offer18ClientNotInitialiseException("Client is not initialised");
         }
         client.trackConversion(args, configuration);
+    }
+
+    /**
+     * Track conversion
+     */
+    public static void trackConversion(Map<String, String> args, Callback callback) throws Exception {
+        if (Objects.isNull(client)) {
+            throw new Offer18ClientNotInitialiseException("Client is not initialised");
+        }
+        client.trackConversion(args, configuration, callback);
     }
 
     public static String getEnv() {

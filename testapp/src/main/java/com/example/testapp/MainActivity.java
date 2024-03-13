@@ -1,5 +1,9 @@
 package com.example.testapp;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -9,12 +13,15 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.offer18.sdk.Offer18;
 import com.offer18.sdk.constant.Constant;
+import com.offer18.sdk.contract.Callback;
+import com.offer18.sdk.contract.Response;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
             allowMultiConversion, currency;
     Spinner postbackType, isGlobalPixel;
     LinearLayout container;
+    TextView error;
     List<HashMap<String, EditText>> additionArgs = new ArrayList<>();
 
     @Override
@@ -51,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
         coupon = findViewById(R.id.coupon);
         currency = findViewById(R.id.currency);
         postbackType = findViewById(R.id.postback_type);
+        error = findViewById(R.id.error_container);
+        error.setTextColor(Color.RED);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.postback_type,
@@ -97,8 +107,26 @@ public class MainActivity extends AppCompatActivity {
                         args.put(userValue, arg.get("user_value").getText().toString());
                     }
                 }
-                Offer18.trackConversion(args);
-                Toast.makeText(MainActivity.this, "Conversion Recorded  ", Toast.LENGTH_LONG).show();
+                Offer18.trackConversion(args, new Callback() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        error.setTextColor(Color.GREEN);
+                        error.setText("success");
+                    }
+
+                    @Override
+                    public void onError(Response response) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                error.setTextColor(Color.RED);
+                                error.setText(response.getError());
+                            }
+                        });
+                        Log.d("o18", response.getError());
+                    }
+                });
+                Log.d("o18", args.toString());
             } catch (Exception e) {
                 Log.d("o18", e.getMessage());
                 Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
