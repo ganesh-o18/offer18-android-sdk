@@ -56,14 +56,14 @@ public class TrackConversionWorker implements Runnable {
             Call call = this.httpClient.newCall(request);
             Response response = call.execute();
             if (!Objects.isNull(this.callback)) {
-                this.callback.onSuccess(new TrackConversionResponse());
+                this.callback.onSuccess(new TrackConversionResponse(true, url.toString()));
             }
             Log.d("o18", response.toString());
         } catch (InterruptedException | Offer18SSLVerifcationException |
                  Offer18FormFieldRequiredException | Offer18FormFieldDataTypeException |
                  RuntimeException | IOException e) {
             if (!Objects.isNull(this.callback)) {
-                TrackConversionResponse response = new TrackConversionResponse(e.getMessage());
+                TrackConversionResponse response = new TrackConversionResponse(false, e.getMessage());
                 this.callback.onError(response);
             }
         }

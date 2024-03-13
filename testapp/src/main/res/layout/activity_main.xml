@@ -14,10 +14,12 @@
             android:orientation="vertical"
             android:paddingHorizontal="10dp">
 
-            <TextView
+            <EditText
                 android:id="@+id/error_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                />
 
             <EditText
                 android:id="@+id/domain"

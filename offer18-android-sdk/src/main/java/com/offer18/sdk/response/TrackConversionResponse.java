@@ -3,24 +3,21 @@ package com.offer18.sdk.response;
 import com.offer18.sdk.contract.Response;
 
 public class TrackConversionResponse implements Response {
-    protected boolean success = false;
+    protected boolean status;
     protected String error;
 
-    public TrackConversionResponse() {
-        this.success = true;
-    }
-
-    public TrackConversionResponse(String error) {
+    public TrackConversionResponse(boolean status, String error) {
+        this.status = status;
         this.error = error;
     }
 
     @Override
     public boolean isSuccessful() {
-        return false;
+        return this.status;
     }
 
     @Override
-    public String getError() {
+    public String getMessage() {
         return this.error;
     }
 }

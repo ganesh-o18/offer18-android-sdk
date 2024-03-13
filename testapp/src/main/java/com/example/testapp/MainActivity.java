@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     HashMap<String, String> p = new HashMap<String, String>();
     View trackConversionBtn;
     EditText offerId, accountId, tid, domain, advSub1, advSub2, advSub3, advSub4, advSub5, event, payout, sale, coupon,
-            allowMultiConversion, currency;
+            allowMultiConversion, currency, statusContainer;
     Spinner postbackType, isGlobalPixel;
     LinearLayout container;
     TextView error;
@@ -58,8 +58,7 @@ public class MainActivity extends AppCompatActivity {
         coupon = findViewById(R.id.coupon);
         currency = findViewById(R.id.currency);
         postbackType = findViewById(R.id.postback_type);
-        error = findViewById(R.id.error_container);
-        error.setTextColor(Color.RED);
+        statusContainer = findViewById(R.id.error_container);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.postback_type,
@@ -110,8 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 Offer18.trackConversion(args, new Callback() {
                     @Override
                     public void onSuccess(Response response) {
-                        error.setTextColor(Color.GREEN);
-                        error.setText("success");
+                        statusContainer.setText(response.getMessage());
                     }
 
                     @Override
@@ -119,11 +117,10 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                error.setTextColor(Color.RED);
-                                error.setText(response.getError());
+                                statusContainer.setText(response.getMessage());
                             }
                         });
-                        Log.d("o18", response.getError());
+                        Log.d("o18", response.getMessage());
                     }
                 });
                 Log.d("o18", args.toString());
