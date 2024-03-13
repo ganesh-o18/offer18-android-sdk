@@ -2,9 +2,12 @@ package com.example.testapp;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -13,7 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.offer18.sdk.Offer18;
 import com.offer18.sdk.constant.Constant;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     HashMap<String, String> p = new HashMap<String, String>();
@@ -22,11 +28,14 @@ public class MainActivity extends AppCompatActivity {
     EditText offerId, accountId, tid, domain, advSub1, advSub2, advSub3, advSub4, advSub5, event, payout, sale, coupon,
             allowMultiConversion, currency;
     Spinner postbackType, isGlobalPixel;
+    LinearLayout container;
+    List<HashMap<String, EditText>> additionArgs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        container = findViewById(R.id.container);
         offerId = findViewById(R.id.offer_id);
         domain = findViewById(R.id.domain);
         accountId = findViewById(R.id.account_id);
@@ -78,6 +87,16 @@ public class MainActivity extends AppCompatActivity {
                 args.put("currency", currency.getText().toString());
                 args.put("t", postbackType.getSelectedItem().toString().equals("iframe") ? Constant.POSTBACK_TYPE_IFRAME : Constant.POSTBACK_TYPE_PIXEL);
                 args.put("gb", isGlobalPixel.getSelectedItem().toString());
+                if (!additionArgs.isEmpty()) {
+                    for (int i = 0; i < additionArgs.size(); i++) {
+                        HashMap<String, EditText> arg = additionArgs.get(i);
+                        String userValue = arg.get("user_key").getText().toString();
+                        if (Objects.isNull(userValue) || userValue.isEmpty()) {
+                            continue;
+                        }
+                        args.put(userValue, arg.get("user_value").getText().toString());
+                    }
+                }
                 Offer18.trackConversion(args);
                 Toast.makeText(MainActivity.this, "Conversion Recorded  ", Toast.LENGTH_LONG).show();
             } catch (Exception e) {
@@ -85,5 +104,41 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    /**
+     * @param menu The options menu in which you place your items.
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.context, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("o18", Integer.toString(item.getItemId()));
+        if (item.getItemId() == R.id.add_new) {
+            LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout.setMinimumWidth(LinearLayout.LayoutParams.MATCH_PARENT);
+            linearLayout.setMinimumHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+            linearLayout.setWeightSum(1);
+            EditText userKey = new EditText(getApplicationContext());
+            userKey.setWidth(300);
+            userKey.setHint("User key");
+            EditText userValue = new EditText(getApplicationContext());
+            userValue.setWidth(400);
+            userValue.setHint("value");
+            linearLayout.addView(userKey);
+            linearLayout.addView(userValue);
+            HashMap<String, EditText> args = new HashMap<>();
+            args.put("user_key", userKey);
+            args.put("user_value", userValue);
+            additionArgs.add(args);
+            this.container.addView(linearLayout);
+        }
+        return true;
     }
 }

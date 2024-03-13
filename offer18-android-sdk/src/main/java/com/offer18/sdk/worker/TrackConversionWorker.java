@@ -8,6 +8,9 @@ import com.offer18.sdk.Exception.Offer18SSLVerifcationException;
 import com.offer18.sdk.constant.Constant;
 import com.offer18.sdk.contract.Configuration;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
@@ -64,27 +67,33 @@ public class TrackConversionWorker implements Runnable {
         if (!args.containsKey(Constant.POSTBACK_TYPE) || Objects.isNull(args.get(Constant.POSTBACK_TYPE))) {
             args.put(Constant.POSTBACK_TYPE, Constant.POSTBACK_TYPE_PIXEL);
         }
-        for (String key : args.keySet()) {
-            String formName = this.configuration.get("conversion." + key + ".form_name");
-            String required = this.configuration.get("conversion." + key + ".required");
-            String dataType = this.configuration.get("conversion." + key + ".type");
-            Log.d("o18", "key: " + key + " form-name: " + formName + " req: " + required + " data_type: " + dataType);
-            if (Objects.equals(required, "true")) {
-                if (!args.containsKey(formName) || Objects.isNull(args.get(formName)) || args.get(formName).isEmpty()) {
-                    throw new Offer18FormFieldRequiredException("Postback type is required");
-                }
-            }
-            if (args.containsKey(formName) && !Objects.isNull(args.get(formName)) && !args.get(formName).isEmpty()) {
-                if (dataType.equals("number")) {
-                    try {
-                        Float.parseFloat(args.get(formName));
-                    } catch (NumberFormatException | NullPointerException e) {
-                        Log.d("o18", formName + " must be a number");
-                        throw new Offer18FormFieldDataTypeException(formName + " must be a number");
+        try {
+            JSONArray conversionParams = new JSONArray(this.configuration.get(Constant.CONVERSION_PARAMS));
+            for (int i = 0; i < conversionParams.length(); i++) {
+                String key = (String) conversionParams.get(i);
+                String formName = this.configuration.get("conversion." + key + ".form_name");
+                String required = this.configuration.get("conversion." + key + ".required");
+                String dataType = this.configuration.get("conversion." + key + ".type");
+                Log.d("o18", "key: " + key + " form-name: " + formName + " req: " + required + " data_type: " + dataType);
+                if (Objects.equals(required, "true")) {
+                    if (!args.containsKey(formName) || Objects.isNull(args.get(formName)) || args.get(formName).isEmpty()) {
+                        throw new Offer18FormFieldRequiredException("Postback type is required");
                     }
                 }
+                if (args.containsKey(formName) && !Objects.isNull(args.get(formName)) && !args.get(formName).isEmpty()) {
+                    if (dataType.equals("number")) {
+                        try {
+                            Float.parseFloat(args.get(formName));
+                        } catch (NumberFormatException | NullPointerException e) {
+                            Log.d("o18", formName + " must be a number");
+                            throw new Offer18FormFieldDataTypeException(formName + " must be a number");
+                        }
+                    }
+                }
+                url.addQueryParameter(key, args.get(key));
             }
-            url.addQueryParameter(key, args.get(key));
+        } catch (JSONException e) {
+            Log.d("o18", "conversion params are not found");
         }
         return url.build();
     }

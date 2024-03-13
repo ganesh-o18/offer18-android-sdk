@@ -82,6 +82,7 @@ public class ServiceDiscoveryWorker implements Runnable {
             }
         }
         JSONObject serviceDocument, services, http, serviceDiscovery, conversion, conversionFields;
+        JSONArray conversionFieldsArray = new JSONArray();
         long currentUnixTimeStamp = Calendar.getInstance().getTimeInMillis() / 1000;
         try {
             serviceDocument = new JSONObject(json);
@@ -106,7 +107,9 @@ public class ServiceDiscoveryWorker implements Runnable {
                 storage.set("conversion." + formName + "." + "form_name", formName);
                 storage.set("conversion." + formName + "." + "required", Boolean.toString(required));
                 storage.set("conversion." + formName + "." + "type", dataType);
+                conversionFieldsArray.put(param);
             }
+            storage.set(Constant.CONVERSION_PARAMS, conversionFieldsArray.toString());
         } catch (JSONException e) {
             if (configuration.getEnv() == Env.DEBUG) {
                 Log.d("o18", "json parse error, response is not valid json");

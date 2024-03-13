@@ -7,4 +7,6 @@ public class Constant {
     public static final String POSTBACK_TYPE = "t";
     public static final String POSTBACK_TYPE_PIXEL = "i";
     public static final String POSTBACK_TYPE_IFRAME = "f";
+    public static final String CONVERSION_PARAMS = "conversion_params_";
+
 }
