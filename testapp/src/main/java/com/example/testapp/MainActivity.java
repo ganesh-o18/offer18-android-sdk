@@ -30,7 +30,6 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     HashMap<String, String> p = new HashMap<String, String>();
-    HashMap<String, String> args = new HashMap<String, String>();
     View trackConversionBtn;
     EditText offerId, accountId, tid, domain, advSub1, advSub2, advSub3, advSub4, advSub5, event, payout, sale, coupon,
             allowMultiConversion, currency;
@@ -80,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         trackConversionBtn = findViewById(R.id.button);
         trackConversionBtn.setOnClickListener(v -> {
             try {
+                HashMap<String, String> args = new HashMap<String, String>();
                 Offer18.init(getBaseContext());
                 args.put("domain", domain.getText().toString());
                 args.put("o", offerId.getText().toString());
