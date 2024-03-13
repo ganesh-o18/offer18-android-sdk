@@ -121,16 +121,21 @@ public class MainActivity extends AppCompatActivity {
         Log.d("o18", Integer.toString(item.getItemId()));
         if (item.getItemId() == R.id.add_new) {
             LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-            linearLayout.setMinimumWidth(LinearLayout.LayoutParams.MATCH_PARENT);
-            linearLayout.setMinimumHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-            linearLayout.setWeightSum(1);
             EditText userKey = new EditText(getApplicationContext());
-            userKey.setWidth(300);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1.0f
+            );
+            userKey.setLayoutParams(layoutParams);
             userKey.setHint("User key");
             EditText userValue = new EditText(getApplicationContext());
-            userValue.setWidth(400);
-            userValue.setHint("value");
+            userValue.setHint("Value");
+            userValue.setLayoutParams(layoutParams);
             linearLayout.addView(userKey);
             linearLayout.addView(userValue);
             HashMap<String, EditText> args = new HashMap<>();
