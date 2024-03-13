@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
@@ -53,6 +54,8 @@ public class ServiceDiscoveryWorker implements Runnable {
             }
             if (response.isSuccessful()) {
                 this.onResponse(response);
+            } else {
+                this.remoteConfigDownloadSignal.countDown();
             }
         } catch (IOException e) {
             Log.d("o18", e.getMessage());
@@ -78,7 +81,7 @@ public class ServiceDiscoveryWorker implements Runnable {
                 Log.d("o18", "response is not valid json");
             }
         }
-        JSONObject serviceDocument, services, http, serviceDiscovery, conversion;
+        JSONObject serviceDocument, services, http, serviceDiscovery, conversion, conversionFields;
         long currentUnixTimeStamp = Calendar.getInstance().getTimeInMillis() / 1000;
         try {
             serviceDocument = new JSONObject(json);
@@ -92,11 +95,11 @@ public class ServiceDiscoveryWorker implements Runnable {
             storage.set("service_document_expires_in", serviceDiscovery.getString("expires_in"));
             services = serviceDocument.getJSONObject("services");
             conversion = services.getJSONObject("conversion");
-            JSONArray fields = conversion.getJSONArray("fields");
-            JSONObject fieldValidations = conversion.getJSONObject("fields_validation");
-            for (int i = 0; i < fields.length(); i++) {
-                String field = fields.getString(i);
-                JSONObject fieldValidation = fieldValidations.getJSONObject(field);
+            conversionFields = conversion.getJSONObject("fields");
+            Iterator<String> params = conversionFields.keys();
+            while (params.hasNext()) {
+                String param = params.next();
+                JSONObject fieldValidation = conversionFields.getJSONObject(param);
                 String formName = fieldValidation.getString("form_name");
                 boolean required = fieldValidation.getBoolean("required");
                 String dataType = fieldValidation.getString("type");
@@ -104,12 +107,11 @@ public class ServiceDiscoveryWorker implements Runnable {
                 storage.set("conversion." + formName + "." + "required", Boolean.toString(required));
                 storage.set("conversion." + formName + "." + "type", dataType);
             }
-            remoteConfigDownloadSignal.countDown();
         } catch (JSONException e) {
             if (configuration.getEnv() == Env.DEBUG) {
                 Log.d("o18", "json parse error, response is not valid json");
             }
-            remoteConfigDownloadSignal.countDown();
         }
+        remoteConfigDownloadSignal.countDown();
     }
 }
