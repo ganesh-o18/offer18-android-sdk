@@ -86,8 +86,8 @@ public class ServiceDiscoveryWorker implements Runnable {
         long currentUnixTimeStamp = Calendar.getInstance().getTimeInMillis() / 1000;
         try {
             serviceDocument = new JSONObject(json);
-            String digest = serviceDocument.getString(Constant.DIGEST);
-            storage.set(Constant.DIGEST, digest);
+//            String digest = serviceDocument.getString(Constant.DIGEST);
+//            storage.set(Constant.DIGEST, digest);
             http = serviceDocument.getJSONObject("http");
             serviceDiscovery = serviceDocument.getJSONObject("service_discovery");
             storage.set("service_document_updated_at", Long.toString(currentUnixTimeStamp));
@@ -104,9 +104,9 @@ public class ServiceDiscoveryWorker implements Runnable {
                 String formName = fieldValidation.getString("form_name");
                 boolean required = fieldValidation.getBoolean("required");
                 String dataType = fieldValidation.getString("type");
-                storage.set("conversion." + formName + "." + "form_name", formName);
-                storage.set("conversion." + formName + "." + "required", Boolean.toString(required));
-                storage.set("conversion." + formName + "." + "type", dataType);
+                storage.set("conversion." + param + "." + "form_name", formName);
+                storage.set("conversion." + param + "." + "required", Boolean.toString(required));
+                storage.set("conversion." + param + "." + "type", dataType);
                 conversionFieldsArray.put(param);
             }
             storage.set(Constant.CONVERSION_PARAMS, conversionFieldsArray.toString());

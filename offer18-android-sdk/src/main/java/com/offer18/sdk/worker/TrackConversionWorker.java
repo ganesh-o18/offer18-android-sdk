@@ -52,13 +52,13 @@ public class TrackConversionWorker implements Runnable {
             this.remoteConfigDownloadSignal.await();
             HttpUrl url = this.buildEndpoint(args);
             Request request = new Request.Builder().url(url).build();
-            Log.println(Log.INFO, "offer18-url", request.url().toString());
+            Log.println(Log.INFO, "o18", request.url().toString());
             Call call = this.httpClient.newCall(request);
             Response response = call.execute();
             if (!Objects.isNull(this.callback)) {
                 this.callback.onSuccess(new TrackConversionResponse());
             }
-            Log.d("o18-con", response.toString());
+            Log.d("o18", response.toString());
         } catch (InterruptedException | Offer18SSLVerifcationException |
                  Offer18FormFieldRequiredException | Offer18FormFieldDataTypeException |
                  RuntimeException | IOException e) {
@@ -107,7 +107,7 @@ public class TrackConversionWorker implements Runnable {
                         }
                     }
                 }
-                url.addQueryParameter(key, args.get(key));
+                url.addQueryParameter(formName, args.get(key));
             }
         } catch (JSONException e) {
             Log.d("o18", "conversion params are not found");
