@@ -74,7 +74,7 @@ public class TrackConversionWorker implements Runnable {
                 .scheme("https")
                 .host("ganesh-local-dev.o18-test.live")
                 .addPathSegments("tracking/p.php");
-        String doesSSLVerificationRequire = this.configuration.get("http_ssl_verification");
+        String doesSSLVerificationRequire = this.configuration.get(Constant.HTTP_SSL_VERIFICATION);
         Log.d("o18", "ssl-ver " + doesSSLVerificationRequire);
         if (Objects.equals(doesSSLVerificationRequire, "true")) {
             if (!Objects.equals(url.getScheme$okhttp(), "https")) {
@@ -88,9 +88,9 @@ public class TrackConversionWorker implements Runnable {
             JSONArray conversionParams = new JSONArray(this.configuration.get(Constant.CONVERSION_PARAMS));
             for (int i = 0; i < conversionParams.length(); i++) {
                 String key = (String) conversionParams.get(i);
-                String formName = this.configuration.get("conversion." + key + ".form_name");
-                String required = this.configuration.get("conversion." + key + ".required");
-                String dataType = this.configuration.get("conversion." + key + ".type");
+                String formName = this.configuration.get(Constant.CONVERSION_FIELDS_PREFIX + "." + key + "." + Constant.CONVERSION_FIELDS_PREFIX_FORM_NAME);
+                String required = this.configuration.get(Constant.CONVERSION_FIELDS_PREFIX + "." + key + "." + Constant.CONVERSION_FIELDS_PREFIX_REQUIRED);
+                String dataType = this.configuration.get(Constant.CONVERSION_FIELDS_PREFIX + "." + key + "." + Constant.CONVERSION_FIELDS_PREFIX_DATA_TYPE);
                 Log.d("o18", "key: " + key + " form-name: " + formName + " req: " + required + " data_type: " + dataType);
                 if (Objects.equals(required, "true")) {
                     if (!args.containsKey(key) || Objects.isNull(args.get(formName)) || args.get(key).isEmpty()) {
@@ -100,7 +100,7 @@ public class TrackConversionWorker implements Runnable {
                 if (args.containsKey(key) && !Objects.isNull(args.get(key)) && !args.get(key).isEmpty()) {
                     if (dataType.equals("number")) {
                         try {
-                            Float.parseFloat(args.get(key));
+                            Float.parseFloat(Objects.requireNonNull(args.get(key)));
                         } catch (NumberFormatException | NullPointerException e) {
                             Log.d("o18", key + " must be a number");
                             throw new Offer18FormFieldDataTypeException(key + " must be a number");
