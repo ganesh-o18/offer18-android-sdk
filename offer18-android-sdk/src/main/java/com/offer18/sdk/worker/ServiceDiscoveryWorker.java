@@ -38,6 +38,11 @@ public class ServiceDiscoveryWorker implements Runnable {
 
     @Override
     public void run() {
+        if (!this.configuration.isRemoteConfigOutdated()) {
+            Log.d("o18", "remote config is up-to-date");
+            this.remoteConfigDownloadSignal.countDown();
+            return;
+        }
         Log.d("o18", "calling service discovery");
         String url = Constant.SERVICE_DISCOVERY_ENDPOINT + "?digest=" + this.configuration.get(Constant.DIGEST);
         Log.d("o18", url);

@@ -26,4 +26,6 @@ public interface Configuration {
     boolean remove(String key);
 
     long getHttpDefaultTimeout();
+
+    boolean isRemoteConfigOutdated();
 }

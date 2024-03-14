@@ -1,11 +1,16 @@
 package com.offer18.sdk;
 
+import android.util.Log;
+
+import com.offer18.sdk.constant.Constant;
 import com.offer18.sdk.constant.Env;
 import com.offer18.sdk.contract.Configuration;
 import com.offer18.sdk.contract.CredentialManager;
 import com.offer18.sdk.contract.Storage;
 
+import java.util.Calendar;
 import java.util.Map;
+import java.util.Objects;
 
 class Offer18Configuration implements Configuration {
     protected CredentialManager credentialManager;
@@ -77,5 +82,26 @@ class Offer18Configuration implements Configuration {
     @Override
     public long getHttpDefaultTimeout() {
         return 2000;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public boolean isRemoteConfigOutdated() {
+        boolean isOutdated;
+        if (Objects.isNull(this.storage)) {
+            return true;
+        }
+        String lastUpdatedAt = this.storage.get(Constant.LAST_UPDATED_AT);
+        long currentUnixStamp = Calendar.getInstance().getTimeInMillis() / 1000;
+        try {
+            long lastUpdatedStamp = Long.parseLong(lastUpdatedAt);
+            isOutdated = currentUnixStamp >= lastUpdatedStamp;
+        } catch (Exception exception) {
+            Log.d("o18", exception.getMessage());
+            isOutdated = true;
+        }
+        return isOutdated;
     }
 }
