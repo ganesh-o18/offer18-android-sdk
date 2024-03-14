@@ -1,5 +1,6 @@
 plugins {
     id("com.android.library")
+    id ("io.sentry.android.gradle") version "4.3.1"
     id("maven-publish")
 }
 

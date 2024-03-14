@@ -32,6 +32,7 @@ public class Offer18 {
         Configuration configuration = new Offer18Configuration(new HashMap<>());
         Storage storage = new Offer18Storage(context);
         configuration.setStorage(storage);
+        configuration.setLogger(new Offer18Logger());
         client = new Offer18Client(configuration);
     }
 
@@ -42,6 +43,7 @@ public class Offer18 {
         Configuration configuration = new Offer18Configuration(new HashMap<>());
         Storage storage = new Offer18Storage(context);
         configuration.setStorage(storage);
+        configuration.setLogger(new Offer18Logger());
         client = new Offer18Client(configuration);
     }
 

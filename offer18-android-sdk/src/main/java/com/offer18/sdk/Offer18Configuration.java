@@ -6,6 +6,7 @@ import com.offer18.sdk.constant.Constant;
 import com.offer18.sdk.constant.Env;
 import com.offer18.sdk.contract.Configuration;
 import com.offer18.sdk.contract.CredentialManager;
+import com.offer18.sdk.contract.Logger;
 import com.offer18.sdk.contract.Storage;
 
 import java.util.Calendar;
@@ -16,6 +17,7 @@ class Offer18Configuration implements Configuration {
     protected CredentialManager credentialManager;
     protected Env env = Env.PRODUCTION;
     protected Storage storage;
+    protected Logger logger;
 
     public Offer18Configuration(CredentialManager credentialManager, Map<String, String> config) {
         this.credentialManager = credentialManager;
@@ -104,5 +106,14 @@ class Offer18Configuration implements Configuration {
             isOutdated = true;
         }
         return isOutdated;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return this.logger;
+    }
+    @Override
+    public void setLogger(Logger logger) {
+        this.logger = logger;
     }
 }

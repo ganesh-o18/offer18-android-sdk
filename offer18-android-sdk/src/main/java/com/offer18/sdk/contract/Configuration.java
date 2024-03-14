@@ -28,4 +28,8 @@ public interface Configuration {
     long getHttpDefaultTimeout();
 
     boolean isRemoteConfigOutdated();
+
+    Logger getLogger();
+
+    void setLogger(Logger logger);
 }
