@@ -38,12 +38,13 @@ public class ServiceDiscoveryWorker implements Runnable {
 
     @Override
     public void run() {
-        if (!this.configuration.isRemoteConfigOutdated()) {
+        boolean isRemoteConfigOutdated = this.configuration.isRemoteConfigOutdated();
+        if (!isRemoteConfigOutdated) {
             Log.d("o18", "remote config is up-to-date");
             this.remoteConfigDownloadSignal.countDown();
             return;
         }
-        Log.d("o18", "calling service discovery");
+        Log.d("o18", "remote config is outdated, updating");
         String url = Constant.SERVICE_DISCOVERY_ENDPOINT + "?digest=" + this.configuration.get(Constant.DIGEST);
         Log.d("o18", url);
         Request request = new Request.Builder().url(url).build();
@@ -57,7 +58,7 @@ public class ServiceDiscoveryWorker implements Runnable {
                 return;
             }
             if (response.isSuccessful()) {
-                this.onResponse(response);
+                this.onResponse(response, isRemoteConfigOutdated);
             } else {
                 this.remoteConfigDownloadSignal.countDown();
             }
@@ -67,7 +68,12 @@ public class ServiceDiscoveryWorker implements Runnable {
         }
     }
 
-    public void onResponse(Response response) throws IOException {
+    public void onResponse(Response response, boolean isRemoteConfigOutdated) throws IOException {
+        JSONObject serviceDocument, services, http, serviceDiscovery, conversion, conversionFields;
+        JSONArray conversionFieldsArray = new JSONArray();
+        long currentUnixTimeStamp = Calendar.getInstance().getTimeInMillis() / 1000;
+        boolean shouldUpdateLocalConfig;
+        String digest = null;
         if (!response.isSuccessful()) {
             if (configuration.getEnv() == Env.DEBUG) {
                 Log.d("o18", Integer.toString(response.code()));
@@ -85,11 +91,6 @@ public class ServiceDiscoveryWorker implements Runnable {
                 Log.d("o18", "response is not valid json");
             }
         }
-        JSONObject serviceDocument, services, http, serviceDiscovery, conversion, conversionFields;
-        JSONArray conversionFieldsArray = new JSONArray();
-        long currentUnixTimeStamp = Calendar.getInstance().getTimeInMillis() / 1000;
-        boolean shouldUpdateLocalConfig;
-        String digest = null;
         try {
             serviceDocument = new JSONObject(json);
             try {
@@ -114,11 +115,11 @@ public class ServiceDiscoveryWorker implements Runnable {
                 storage.set("http_time_out", http.getString("time_out"));
                 storage.set("http_ssl_verification", http.getString("ssl_verification"));
                 try {
-                    String expiresIn = serviceDiscovery.getString("expires_in");
-                    long expiresAt = currentUnixTimeStamp + Long.parseLong(expiresIn);
+                    long expiresIn = serviceDiscovery.getLong(Constant.EXPIRES_AT);
+                    long expiresAt = currentUnixTimeStamp + expiresIn;
                     storage.set(Constant.EXPIRES_AT, Long.toString(expiresAt));
                 } catch (Exception e) {
-                    Log.d("o18", e.getMessage());
+                    Log.d("o18", "failed to update expires in " + e.getMessage());
                 }
                 services = serviceDocument.getJSONObject("services");
                 conversion = services.getJSONObject("conversion");
@@ -136,6 +137,15 @@ public class ServiceDiscoveryWorker implements Runnable {
                     conversionFieldsArray.put(param);
                 }
                 storage.set(Constant.CONVERSION_PARAMS, conversionFieldsArray.toString());
+            }
+            if (isRemoteConfigOutdated) {
+                try {
+                    long expiresIn = serviceDocument.getJSONObject(Constant.SERVICE_DISCOVERY).getLong(Constant.EXPIRES_AT);
+                    long expiresAt = currentUnixTimeStamp + expiresIn;
+                    storage.set(Constant.EXPIRES_AT, Long.toString(expiresAt));
+                } catch (Exception e) {
+                    Log.d("o18", "failed to update expires in " + e.getMessage());
+                }
             }
         } catch (JSONException e) {
             if (configuration.getEnv() == Env.DEBUG) {

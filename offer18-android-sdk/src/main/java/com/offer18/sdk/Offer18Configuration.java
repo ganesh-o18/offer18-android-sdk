@@ -98,6 +98,7 @@ class Offer18Configuration implements Configuration {
             long currentUnixStamp = Calendar.getInstance().getTimeInMillis() / 1000;
             long lastUpdatedStamp = Long.parseLong(lastUpdatedAt);
             isOutdated = currentUnixStamp >= lastUpdatedStamp;
+            Log.d("o18", "expires at " + lastUpdatedAt);
         } catch (Exception exception) {
             Log.d("o18", exception.getMessage());
             isOutdated = true;
