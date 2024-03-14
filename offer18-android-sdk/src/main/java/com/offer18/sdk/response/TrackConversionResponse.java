@@ -4,11 +4,11 @@ import com.offer18.sdk.contract.Response;
 
 public class TrackConversionResponse implements Response {
     protected boolean status;
-    protected String error;
+    protected String message;
 
-    public TrackConversionResponse(boolean status, String error) {
+    public TrackConversionResponse(boolean status, String message) {
         this.status = status;
-        this.error = error;
+        this.message = message;
     }
 
     @Override
@@ -18,6 +18,6 @@ public class TrackConversionResponse implements Response {
 
     @Override
     public String getMessage() {
-        return this.error;
+        return this.message;
     }
 }
