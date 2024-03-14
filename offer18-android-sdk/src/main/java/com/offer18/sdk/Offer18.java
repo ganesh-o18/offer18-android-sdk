@@ -8,6 +8,7 @@ import com.offer18.sdk.contract.Callback;
 import com.offer18.sdk.contract.Client;
 import com.offer18.sdk.contract.Configuration;
 import com.offer18.sdk.contract.Storage;
+import com.offer18.sdk.logger.Offer18Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class Offer18 {
      */
     protected static Client client;
 
-    protected static Env env = Env.DEBUG;
+    protected static Env env = Env.PRODUCTION;
 
     /**
      * Init SDK
@@ -32,7 +33,7 @@ public class Offer18 {
         Configuration configuration = new Offer18Configuration(new HashMap<>());
         Storage storage = new Offer18Storage(context);
         configuration.setStorage(storage);
-        configuration.setLogger(new Offer18Logger());
+        configuration.setLogger(new Offer18Logger("FwhsGKinnX3ySsW5pxxYpdxE"));
         client = new Offer18Client(configuration);
     }
 
@@ -43,7 +44,7 @@ public class Offer18 {
         Configuration configuration = new Offer18Configuration(new HashMap<>());
         Storage storage = new Offer18Storage(context);
         configuration.setStorage(storage);
-        configuration.setLogger(new Offer18Logger());
+        configuration.setLogger(new Offer18Logger("FwhsGKinnX3ySsW5pxxYpdxE"));
         client = new Offer18Client(configuration);
     }
 

@@ -13,6 +13,7 @@ import com.offer18.sdk.response.TrackConversionResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
@@ -49,6 +50,7 @@ public class TrackConversionWorker implements Runnable {
     @Override
     public void run() {
         try {
+            this.configuration.getLogger().info("o18");
             this.remoteConfigDownloadSignal.await();
             HttpUrl url = this.buildEndpoint(args);
             Request request = new Request.Builder().url(url).build();

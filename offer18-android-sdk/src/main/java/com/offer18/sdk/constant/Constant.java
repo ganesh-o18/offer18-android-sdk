@@ -3,6 +3,7 @@ package com.offer18.sdk.constant;
 public class Constant {
     public static final String SERVICE_DISCOVERY_ENDPOINT = "https://ganesh-local-dev.o18-test.live/sdk/config.json";
     public static final String DIGEST = "digest";
+    public static final String LOGGER_PROVIDER = "logger_provider";
     public static final String HTTP = "http";
     public static final String SERVICES = "services";
     public static final String SERVICES_FIELDS = "fields";

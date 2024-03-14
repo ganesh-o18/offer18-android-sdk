@@ -45,6 +45,7 @@ public class ServiceDiscoveryWorker implements Runnable {
             return;
         }
         Log.d("o18", "remote config is outdated, updating");
+        this.configuration.getLogger().info("remote config is outdated");
         String url = Constant.SERVICE_DISCOVERY_ENDPOINT + "?digest=" + this.configuration.get(Constant.DIGEST);
         Log.d("o18", url);
         Request request = new Request.Builder().url(url).build();
