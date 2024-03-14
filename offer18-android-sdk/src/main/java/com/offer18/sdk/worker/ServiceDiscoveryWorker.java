@@ -6,7 +6,7 @@ import com.offer18.sdk.constant.Constant;
 import com.offer18.sdk.constant.Env;
 import com.offer18.sdk.contract.Configuration;
 import com.offer18.sdk.contract.Storage;
-import com.offer18.sdk.utils.Offer18Util;
+import com.offer18.sdk.util.Offer18Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -110,10 +110,10 @@ public class ServiceDiscoveryWorker implements Runnable {
                 if (!Objects.isNull(digest)) {
                     this.configuration.set(Constant.DIGEST, digest);
                 }
-                http = serviceDocument.getJSONObject("http");
-                serviceDiscovery = serviceDocument.getJSONObject("service_discovery");
-                storage.set("http_time_out", http.getString("time_out"));
-                storage.set("http_ssl_verification", http.getString("ssl_verification"));
+                http = serviceDocument.getJSONObject(Constant.HTTP);
+                serviceDiscovery = serviceDocument.getJSONObject(Constant.SERVICE_DISCOVERY);
+                storage.set(Constant.HTTP_TIME_OUT, http.getString(Constant.HTTP_TIME_OUT));
+                storage.set(Constant.HTTP_SSL_VERIFICATION, http.getString(Constant.HTTP_SSL_VERIFICATION));
                 try {
                     long expiresIn = serviceDiscovery.getLong(Constant.EXPIRES_AT);
                     long expiresAt = currentUnixTimeStamp + expiresIn;
@@ -121,19 +121,19 @@ public class ServiceDiscoveryWorker implements Runnable {
                 } catch (Exception e) {
                     Log.d("o18", "failed to update expires in " + e.getMessage());
                 }
-                services = serviceDocument.getJSONObject("services");
-                conversion = services.getJSONObject("conversion");
-                conversionFields = conversion.getJSONObject("fields");
+                services = serviceDocument.getJSONObject(Constant.SERVICES);
+                conversion = services.getJSONObject(Constant.SERVICES_CONVERSION);
+                conversionFields = conversion.getJSONObject(Constant.SERVICES_FIELDS);
                 Iterator<String> params = conversionFields.keys();
                 while (params.hasNext()) {
                     String param = params.next();
                     JSONObject fieldValidation = conversionFields.getJSONObject(param);
-                    String formName = fieldValidation.getString("form_name");
-                    boolean required = fieldValidation.getBoolean("required");
-                    String dataType = fieldValidation.getString("type");
-                    storage.set("conversion." + param + "." + "form_name", formName);
-                    storage.set("conversion." + param + "." + "required", Boolean.toString(required));
-                    storage.set("conversion." + param + "." + "type", dataType);
+                    String formName = fieldValidation.getString(Constant.CONVERSION_FIELDS_PREFIX_FORM_NAME);
+                    boolean required = fieldValidation.getBoolean(Constant.CONVERSION_FIELDS_PREFIX_REQUIRED);
+                    String dataType = fieldValidation.getString(Constant.CONVERSION_FIELDS_PREFIX_DATA_TYPE);
+                    storage.set(Constant.CONVERSION_FIELDS_PREFIX + "." + param + "." + Constant.CONVERSION_FIELDS_PREFIX_FORM_NAME, formName);
+                    storage.set(Constant.CONVERSION_FIELDS_PREFIX + "." + param + "." + Constant.CONVERSION_FIELDS_PREFIX_REQUIRED, Boolean.toString(required));
+                    storage.set(Constant.CONVERSION_FIELDS_PREFIX + "." + param + "." + Constant.CONVERSION_FIELDS_PREFIX_DATA_TYPE, dataType);
                     conversionFieldsArray.put(param);
                 }
                 storage.set(Constant.CONVERSION_PARAMS, conversionFieldsArray.toString());

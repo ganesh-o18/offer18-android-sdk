@@ -1,6 +1,6 @@
 package com.offer18.sdk;
 
-import com.offer18.sdk.utils.Offer18Util;
+import com.offer18.sdk.util.Offer18Util;
 
 import org.junit.Test;
 

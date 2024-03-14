@@ -1,4 +1,4 @@
-package com.offer18.sdk.utils;
+package com.offer18.sdk.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

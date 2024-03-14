@@ -1,6 +1,5 @@
 package com.offer18.sdk;
 
-import com.offer18.sdk.constant.Constant;
 import com.offer18.sdk.contract.Callback;
 import com.offer18.sdk.contract.Client;
 import com.offer18.sdk.contract.Configuration;
@@ -9,6 +8,7 @@ import com.offer18.sdk.worker.TrackConversionWorker;
 
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 
@@ -19,8 +19,7 @@ class Offer18Client implements Client {
 
     public Offer18Client(Configuration configuration) {
         this.configuration = configuration;
-        String currentDigest = this.configuration.get(Constant.DIGEST);
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS);
         this.httpClient = clientBuilder.build();
         new Thread(new ServiceDiscoveryWorker(remoteConfigDownloadSignal, this.httpClient, this.configuration, null)).start();
     }
