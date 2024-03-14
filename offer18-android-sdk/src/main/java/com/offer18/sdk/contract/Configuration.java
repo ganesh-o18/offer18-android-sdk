@@ -32,4 +32,6 @@ public interface Configuration {
     Logger getLogger();
 
     void setLogger(Logger logger);
+
+    boolean isLoggingEnabled();
 }

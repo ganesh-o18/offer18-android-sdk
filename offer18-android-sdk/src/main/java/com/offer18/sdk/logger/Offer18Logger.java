@@ -1,6 +1,7 @@
 package com.offer18.sdk.logger;
 
 import com.offer18.sdk.contract.Logger;
+import com.offer18.sdk.util.Offer18Util;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -8,6 +9,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -63,7 +65,11 @@ public class Offer18Logger implements Logger {
 
     protected RequestBody buildRequestBody(String body) throws JSONException {
         JSONObject jsonBody = new JSONObject();
-        jsonBody.put("message", body);
+        jsonBody.put("message_string", body);
+        Map<String, String> metadata = Offer18Util.getMetadata();
+        for(String key : metadata.keySet()) {
+            jsonBody.put(key, metadata.get(key));
+        }
         return RequestBody.create(jsonBody.toString().getBytes(StandardCharsets.UTF_8));
     }
 }

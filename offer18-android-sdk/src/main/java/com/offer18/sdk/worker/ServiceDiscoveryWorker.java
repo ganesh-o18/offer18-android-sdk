@@ -45,7 +45,7 @@ public class ServiceDiscoveryWorker implements Runnable {
             return;
         }
         Log.d("o18", "remote config is outdated, updating");
-        this.configuration.getLogger().info("remote config is outdated");
+        this.configuration.getLogger().log("remote config is outdated");
         String url = Constant.SERVICE_DISCOVERY_ENDPOINT + "?digest=" + this.configuration.get(Constant.DIGEST);
         Log.d("o18", url);
         Request request = new Request.Builder().url(url).build();
@@ -115,6 +115,7 @@ public class ServiceDiscoveryWorker implements Runnable {
                 serviceDiscovery = serviceDocument.getJSONObject(Constant.SERVICE_DISCOVERY);
                 storage.set(Constant.HTTP_TIME_OUT, http.getString(Constant.HTTP_TIME_OUT));
                 storage.set(Constant.HTTP_SSL_VERIFICATION, http.getString(Constant.HTTP_SSL_VERIFICATION));
+                storage.set(Constant.SERVICE_DISCOVERY_ENABLE_LOG, serviceDiscovery.getString(Constant.SERVICE_DISCOVERY_ENABLE_LOG));
                 try {
                     long expiresIn = serviceDiscovery.getLong(Constant.EXPIRES_AT);
                     long expiresAt = currentUnixTimeStamp + expiresIn;

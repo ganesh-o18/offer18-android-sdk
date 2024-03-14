@@ -112,8 +112,16 @@ class Offer18Configuration implements Configuration {
     public Logger getLogger() {
         return this.logger;
     }
+
     @Override
     public void setLogger(Logger logger) {
         this.logger = logger;
+    }
+
+    public boolean isLoggingEnabled() {
+        if (Objects.isNull(this.storage)) {
+            return true;
+        }
+        return this.storage.get(Constant.SERVICE_DISCOVERY_ENABLE_LOG).equals("true");
     }
 }

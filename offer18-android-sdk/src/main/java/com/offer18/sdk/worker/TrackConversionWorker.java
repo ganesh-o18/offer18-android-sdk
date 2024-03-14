@@ -50,17 +50,22 @@ public class TrackConversionWorker implements Runnable {
     @Override
     public void run() {
         try {
-            this.configuration.getLogger().info("o18");
             this.remoteConfigDownloadSignal.await();
             HttpUrl url = this.buildEndpoint(args);
             Request request = new Request.Builder().url(url).build();
             Log.println(Log.INFO, "o18", request.url().toString());
+            if (this.configuration.isLoggingEnabled()) {
+                this.configuration.getLogger().log(request.url().toString());
+            }
             Call call = this.httpClient.newCall(request);
             Response response = call.execute();
             if (!Objects.isNull(this.callback)) {
                 this.callback.onSuccess(new TrackConversionResponse(true, url.toString()));
             }
             Log.d("o18", response.toString());
+            if (this.configuration.isLoggingEnabled()) {
+                this.configuration.getLogger().log(response.toString());
+            }
         } catch (InterruptedException | Offer18SSLVerifcationException |
                  Offer18FormFieldRequiredException | Offer18FormFieldDataTypeException |
                  RuntimeException | IOException e) {
@@ -78,6 +83,9 @@ public class TrackConversionWorker implements Runnable {
                 .addPathSegments("tracking/p.php");
         String doesSSLVerificationRequire = this.configuration.get(Constant.HTTP_SSL_VERIFICATION);
         Log.d("o18", "ssl-ver " + doesSSLVerificationRequire);
+        if (this.configuration.isLoggingEnabled()) {
+            this.configuration.getLogger().log(doesSSLVerificationRequire);
+        }
         if (Objects.equals(doesSSLVerificationRequire, "true")) {
             if (!Objects.equals(url.getScheme$okhttp(), "https")) {
                 throw new Offer18SSLVerifcationException("HTTPS scheme is required");
@@ -94,6 +102,9 @@ public class TrackConversionWorker implements Runnable {
                 String required = this.configuration.get(Constant.CONVERSION_FIELDS_PREFIX + "." + key + "." + Constant.CONVERSION_FIELDS_PREFIX_REQUIRED);
                 String dataType = this.configuration.get(Constant.CONVERSION_FIELDS_PREFIX + "." + key + "." + Constant.CONVERSION_FIELDS_PREFIX_DATA_TYPE);
                 Log.d("o18", "key: " + key + " form-name: " + formName + " req: " + required + " data_type: " + dataType);
+                if (this.configuration.isLoggingEnabled()) {
+                    this.configuration.getLogger().log("key: " + key + " form-name: " + formName + " req: " + required + " data_type: " + dataType);
+                }
                 if (Objects.equals(required, "true")) {
                     if (!args.containsKey(key) || Objects.isNull(args.get(formName)) || args.get(key).isEmpty()) {
                         throw new Offer18FormFieldRequiredException(key + " is required");
@@ -105,6 +116,9 @@ public class TrackConversionWorker implements Runnable {
                             Float.parseFloat(Objects.requireNonNull(args.get(key)));
                         } catch (NumberFormatException | NullPointerException e) {
                             Log.d("o18", key + " must be a number");
+                            if (this.configuration.isLoggingEnabled()) {
+                                this.configuration.getLogger().log(key + " must be a number");
+                            }
                             throw new Offer18FormFieldDataTypeException(key + " must be a number");
                         }
                     }
@@ -113,6 +127,9 @@ public class TrackConversionWorker implements Runnable {
             }
         } catch (JSONException e) {
             Log.d("o18", "conversion params are not found");
+            if (this.configuration.isLoggingEnabled()) {
+                this.configuration.getLogger().log("conversion params are not found");
+            }
         }
         return url.build();
     }
