@@ -109,7 +109,12 @@ public class MainActivity extends AppCompatActivity {
                 Offer18.trackConversion(args, new Callback() {
                     @Override
                     public void onSuccess(Response response) {
-                        statusContainer.setText(response.getMessage());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                statusContainer.setText(response.getMessage());
+                            }
+                        });
                     }
 
                     @Override

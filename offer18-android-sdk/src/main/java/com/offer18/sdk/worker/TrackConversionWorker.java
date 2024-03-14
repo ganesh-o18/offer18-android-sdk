@@ -93,17 +93,17 @@ public class TrackConversionWorker implements Runnable {
                 String dataType = this.configuration.get("conversion." + key + ".type");
                 Log.d("o18", "key: " + key + " form-name: " + formName + " req: " + required + " data_type: " + dataType);
                 if (Objects.equals(required, "true")) {
-                    if (!args.containsKey(formName) || Objects.isNull(args.get(formName)) || args.get(formName).isEmpty()) {
-                        throw new Offer18FormFieldRequiredException(formName + " is required");
+                    if (!args.containsKey(key) || Objects.isNull(args.get(formName)) || args.get(key).isEmpty()) {
+                        throw new Offer18FormFieldRequiredException(key + " is required");
                     }
                 }
-                if (args.containsKey(formName) && !Objects.isNull(args.get(formName)) && !args.get(formName).isEmpty()) {
+                if (args.containsKey(key) && !Objects.isNull(args.get(key)) && !args.get(key).isEmpty()) {
                     if (dataType.equals("number")) {
                         try {
-                            Float.parseFloat(args.get(formName));
+                            Float.parseFloat(args.get(key));
                         } catch (NumberFormatException | NullPointerException e) {
-                            Log.d("o18", formName + " must be a number");
-                            throw new Offer18FormFieldDataTypeException(formName + " must be a number");
+                            Log.d("o18", key + " must be a number");
+                            throw new Offer18FormFieldDataTypeException(key + " must be a number");
                         }
                     }
                 }
