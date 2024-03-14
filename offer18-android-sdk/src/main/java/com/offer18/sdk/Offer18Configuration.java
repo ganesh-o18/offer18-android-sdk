@@ -93,9 +93,9 @@ class Offer18Configuration implements Configuration {
         if (Objects.isNull(this.storage)) {
             return true;
         }
-        String lastUpdatedAt = this.storage.get(Constant.LAST_UPDATED_AT);
-        long currentUnixStamp = Calendar.getInstance().getTimeInMillis() / 1000;
         try {
+            String lastUpdatedAt = this.storage.get(Constant.EXPIRES_AT);
+            long currentUnixStamp = Calendar.getInstance().getTimeInMillis() / 1000;
             long lastUpdatedStamp = Long.parseLong(lastUpdatedAt);
             isOutdated = currentUnixStamp >= lastUpdatedStamp;
         } catch (Exception exception) {

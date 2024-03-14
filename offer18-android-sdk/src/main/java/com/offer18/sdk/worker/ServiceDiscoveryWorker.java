@@ -111,10 +111,15 @@ public class ServiceDiscoveryWorker implements Runnable {
                 }
                 http = serviceDocument.getJSONObject("http");
                 serviceDiscovery = serviceDocument.getJSONObject("service_discovery");
-                storage.set("service_document_updated_at", Long.toString(currentUnixTimeStamp));
                 storage.set("http_time_out", http.getString("time_out"));
                 storage.set("http_ssl_verification", http.getString("ssl_verification"));
-                storage.set("service_document_expires_in", serviceDiscovery.getString("expires_in"));
+                try {
+                    String expiresIn = serviceDiscovery.getString("expires_in");
+                    long expiresAt = currentUnixTimeStamp + Long.parseLong(expiresIn);
+                    storage.set(Constant.EXPIRES_AT, Long.toString(expiresAt));
+                } catch (Exception e) {
+                    Log.d("o18", e.getMessage());
+                }
                 services = serviceDocument.getJSONObject("services");
                 conversion = services.getJSONObject("conversion");
                 conversionFields = conversion.getJSONObject("fields");
