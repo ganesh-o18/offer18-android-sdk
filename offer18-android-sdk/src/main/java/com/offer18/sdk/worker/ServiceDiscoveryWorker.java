@@ -113,7 +113,7 @@ public class ServiceDiscoveryWorker implements Runnable {
                 }
                 http = serviceDocument.getJSONObject(Constant.HTTP);
                 serviceDiscovery = serviceDocument.getJSONObject(Constant.SERVICE_DISCOVERY);
-                storage.set(Constant.HTTP_TIME_OUT, http.getString(Constant.HTTP_TIME_OUT));
+                storage.set(Constant.HTTP_TIME_OUT, Long.toString(http.getLong(Constant.HTTP_TIME_OUT)));
                 storage.set(Constant.HTTP_SSL_VERIFICATION, http.getString(Constant.HTTP_SSL_VERIFICATION));
                 storage.set(Constant.SERVICE_DISCOVERY_ENABLE_LOG, serviceDiscovery.getString(Constant.SERVICE_DISCOVERY_ENABLE_LOG));
                 try {

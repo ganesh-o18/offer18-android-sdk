@@ -8,7 +8,7 @@ import com.offer18.sdk.Exception.Offer18SSLVerifcationException;
 import com.offer18.sdk.constant.Constant;
 import com.offer18.sdk.contract.Callback;
 import com.offer18.sdk.contract.Configuration;
-import com.offer18.sdk.response.TrackConversionResponse;
+import com.offer18.sdk.response.Offer18Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,7 +60,7 @@ public class TrackConversionWorker implements Runnable {
             Call call = this.httpClient.newCall(request);
             Response response = call.execute();
             if (!Objects.isNull(this.callback)) {
-                this.callback.onSuccess(new TrackConversionResponse(true, url.toString()));
+                this.callback.onSuccess(new Offer18Response(true, url.toString()));
             }
             Log.d("o18", response.toString());
             if (this.configuration.isLoggingEnabled()) {
@@ -70,7 +70,7 @@ public class TrackConversionWorker implements Runnable {
                  Offer18FormFieldRequiredException | Offer18FormFieldDataTypeException |
                  RuntimeException | IOException e) {
             if (!Objects.isNull(this.callback)) {
-                TrackConversionResponse response = new TrackConversionResponse(false, e.getMessage());
+                Offer18Response response = new Offer18Response(false, e.getMessage());
                 this.callback.onError(response);
             }
         }

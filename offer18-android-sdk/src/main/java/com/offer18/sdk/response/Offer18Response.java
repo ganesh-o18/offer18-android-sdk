@@ -2,11 +2,11 @@ package com.offer18.sdk.response;
 
 import com.offer18.sdk.contract.Response;
 
-public class TrackConversionResponse implements Response {
+public class Offer18Response implements Response {
     protected boolean status;
     protected String message;
 
-    public TrackConversionResponse(boolean status, String message) {
+    public Offer18Response(boolean status, String message) {
         this.status = status;
         this.message = message;
     }
